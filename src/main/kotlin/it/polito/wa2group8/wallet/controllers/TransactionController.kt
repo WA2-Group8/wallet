@@ -1,19 +1,19 @@
 package it.polito.wa2group8.wallet.controllers
 
 import it.polito.wa2group8.wallet.dto.TransactionDTO
-import it.polito.wa2group8.wallet.services.TransactionService
+import it.polito.wa2group8.wallet.services.WalletService
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
 
 
 @RestController
-class TransactionController(val transactionService: TransactionService)
+class TransactionController(val walletService: WalletService)
 {
     @GetMapping(value = ["/wallets/{id}/transactions"], produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun getWalletTransactionsById(@PathVariable("id") wallet_id: Long): List<TransactionDTO>
     {
-        //val transactionList: List<TransactionDTO> = transactionService.getTransactionsByWalletId(wallet_id)
+        //val transactionList: List<TransactionDTO> = transactionService.getTransactinsByWalletId(wallet_id)
         TODO("Not yet implemented")
     }
 

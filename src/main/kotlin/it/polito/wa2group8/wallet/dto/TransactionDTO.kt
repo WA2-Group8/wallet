@@ -15,3 +15,7 @@ fun Transaction.toTransactionDTO() : TransactionDTO
 {
     return TransactionDTO(this.transactionType, this.amount.toDouble(), this.timeInstant)
 }
+
+fun TransactionDTO.toEntity() : Transaction {
+    TODO("To be implemented")
+}
