@@ -1,10 +1,7 @@
 package it.polito.wa2group8.wallet.domain
 
 
-import javax.persistence.Column
-import javax.persistence.GeneratedValue
-import javax.persistence.GenerationType
-import javax.persistence.Id
+import javax.persistence.*
 import javax.validation.constraints.Min
 
 class Wallet (
@@ -17,11 +14,11 @@ class Wallet (
 
     @Column(name="currentAmount", nullable=false)
     @Min(0,message="The value must be a positive or zero value")
-    var currentAmount: Int,
+    var currentAmount: Double,
 
-    @Column(name="idTP", nullable=false)
-    var idTP: Long, //Purchases list Id
+    @OneToMany(mappedBy = "walletId",fetch = FetchType.LAZY)
+    var pList: List<Transaction>, //Purchases list
 
-    @Column(name="idTR",nullable=false)
-    var idTR: Long  // Recharges list Id
+    @OneToMany(mappedBy = "walletId",fetch = FetchType.LAZY)
+    var rList: List<Transaction>  // Recharges list
 ){}
