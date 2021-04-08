@@ -12,8 +12,9 @@ class Wallet (
     @GeneratedValue(strategy=GenerationType.AUTO)
     var walletId: Long? = null,
 
-    @Column(name="customerId", nullable=false)
-    var customerId: Long? = null,
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "customerId",referencedColumnName = "customerId")
+    var customerId: Customer,
 
     @Column(name="currentAmount", nullable=false)
     @Min(0,message="The value must be a positive or zero value")

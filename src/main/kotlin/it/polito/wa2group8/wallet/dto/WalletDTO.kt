@@ -1,9 +1,10 @@
 package it.polito.wa2group8.wallet.dto
 
+import it.polito.wa2group8.wallet.domain.Customer
 import it.polito.wa2group8.wallet.domain.Wallet
 import java.math.BigDecimal
 
-data class WalletDTO(val customerId : Long?,
+data class WalletDTO(val customerId : Customer,
                      val currentAmount : Long)
 
 

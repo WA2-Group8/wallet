@@ -13,9 +13,11 @@ import java.math.BigDecimal
 @SpringBootApplication
 class WalletApplication{
     @Bean
-    fun test(walletRepository : WalletRepository) : CommandLineRunner{
+    fun test(walletRepository : WalletRepository,customerRepository : CustomerRepository) : CommandLineRunner{
         return CommandLineRunner{
-            val w1 = Wallet(null,1, -10)
+            val c1 = Customer(1,"Lorenzo","Ceccarelli","ll","vvv")
+            customerRepository.save(c1)
+            val w1 = Wallet(null,c1, -10)
             walletRepository.save(w1)
         }
     }
