@@ -25,16 +25,14 @@ class Transaction(
     var timeInstant: LocalDateTime,
 
     //The wallet which the money was taken from
-    //TODO("Uncomment when real class "Wallet" will be present")
-    //@ManyToOne(fetch = FetchType.LAZY)
-    //@JoinColumn(name = "wallet_id")
-    //payerWallet: Wallet,
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "payerWallet",referencedColumnName = "walletId")
+    var payerWallet: Wallet,
 
     //The wallet which the money was given to
-    //TODO("Uncomment when real class "Wallet" will be present")
-    //@ManyToOne(fetch = FetchType.LAZY)
-    //@JoinColumn(name = "wallet_id")
-    //beneficiaryWallet: Wallet,
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "beneficiaryWallet",referencedColumnName = "walletId")
+    var beneficiaryWallet: Wallet,
 
     //Transaction type
     @Column(name = "transaction_type", nullable = false)

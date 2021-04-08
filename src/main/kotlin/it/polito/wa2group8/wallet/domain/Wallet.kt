@@ -4,6 +4,7 @@ package it.polito.wa2group8.wallet.domain
 import javax.persistence.*
 import javax.validation.constraints.Min
 
+@Entity
 class Wallet (
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
@@ -16,9 +17,10 @@ class Wallet (
     @Min(0,message="The value must be a positive or zero value")
     var currentAmount: Double,
 
-    @OneToMany(mappedBy = "walletId",fetch = FetchType.LAZY)
-    var pList: List<Transaction>, //Purchases list
+    @OneToMany(mappedBy = "payerWallet",targetEntity=Transaction::class,fetch = FetchType.LAZY)
+    var pList: MutableList<Transaction> , //Purchases list
 
-    @OneToMany(mappedBy = "walletId",fetch = FetchType.LAZY)
-    var rList: List<Transaction>  // Recharges list
+    @OneToMany(mappedBy = "beneficiaryWallet",targetEntity=Transaction::class,fetch = FetchType.LAZY)
+    var rList: MutableList<Transaction>  // Recharges list
+
 ){}
