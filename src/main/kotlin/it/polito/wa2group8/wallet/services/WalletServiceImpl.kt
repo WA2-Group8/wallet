@@ -2,7 +2,6 @@ package it.polito.wa2group8.wallet.services
 
 import it.polito.wa2group8.wallet.dto.TransactionDTO
 import it.polito.wa2group8.wallet.dto.toTransactionDTO
-import it.polito.wa2group8.wallet.dto.toTransactionEntity
 import it.polito.wa2group8.wallet.repositories.TransactionRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
@@ -23,7 +22,7 @@ class WalletServiceImpl(
 
     override fun createTransaction(transaction: TransactionDTO) {
         // controllare che i wallet esistano
-        transactionRepo.save(transaction.toTransactionEntity())
+        //transactionRepo.save(transaction.toTransactionEntity())
     }
 
     override fun getTransactionsByWalletId(walletId: Long, startDate: LocalDateTime, endDate: LocalDateTime) : List<TransactionDTO> {

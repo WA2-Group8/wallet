@@ -8,7 +8,6 @@ import javax.validation.constraints.Pattern
 
 //This class maps a transaction to a DBMS
 @Entity
-//@Table(name = "transaction")
 class Transaction(
     @Id
     @Column(name = "transaction_id", nullable = false)
@@ -16,7 +15,7 @@ class Transaction(
     var transactionID: Long? = null,
 
     //The amount of money transacted
-    @DecimalMin(value="0.0", message="The transaction amount must be greater than 0", inclusive=false)
+    @get:DecimalMin(value="0.0", message="The transaction amount must be greater than 0", inclusive=false)
     @Column(name = "amount", nullable = false)
     var amount: BigDecimal,
 
@@ -36,7 +35,7 @@ class Transaction(
 
     //Transaction type
     @Column(name = "transaction_type", nullable = false)
-    @Pattern(regexp = "purchase|recharge", message="Invalid type of transaction")
+    @get:Pattern(regexp = "purchase|recharge", message="Invalid type of transaction")
     var transactionType: TransactionTypes
     )
 {

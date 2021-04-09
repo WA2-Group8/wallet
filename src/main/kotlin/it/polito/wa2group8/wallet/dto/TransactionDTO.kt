@@ -10,8 +10,8 @@ import java.time.ZoneOffset
  */
 data class TransactionDTO(val amount: Double,
                           val dateInMillis: Long,
-                          val payerWallet: Wallet,
-                          val beneficiaryWallet: Wallet,
+                          val payerWalletID: Long,
+                          val beneficiaryWalletID: Long,
                           val type: Transaction.TransactionTypes)
 
 /**
@@ -19,14 +19,8 @@ data class TransactionDTO(val amount: Double,
  */
 fun Transaction.toTransactionDTO() = TransactionDTO(this.amount.toDouble(),
                                                     this.timeInstant.toInstant(ZoneOffset.UTC).toEpochMilli(),
-                                                    this.payerWallet,
-                                                    this.beneficiaryWallet,
+                                                    this.payerWallet.walletId ?: -1,
+                                                    this.beneficiaryWallet.walletId ?: -1,
                                                     this.transactionType)
 
 
-fun TransactionDTO.toTransactionEntity() = Transaction(null,
-                                                        this.amount.toBigDecimal(),
-                                                        Instant.ofEpochMilli(this.dateInMillis).atZone(ZoneOffset.UTC).toLocalDateTime(),
-                                                        this.payerWallet,
-                                                        this.beneficiaryWallet,
-                                                        this.type)
