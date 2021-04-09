@@ -17,4 +17,7 @@ class Customer(
     var email: String,
     @Column(nullable = false)
     var deliveryAddress: String
-)
+){
+    @OneToMany(mappedBy = "walletId", targetEntity = Wallet::class, fetch = FetchType.LAZY)
+    var walletList: MutableList<Wallet> = mutableListOf()
+}
