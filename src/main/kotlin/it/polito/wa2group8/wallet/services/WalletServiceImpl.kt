@@ -1,7 +1,6 @@
 package it.polito.wa2group8.wallet.services
 
 import it.polito.wa2group8.wallet.dto.TransactionDTO
-import it.polito.wa2group8.wallet.dto.toEntity
 import it.polito.wa2group8.wallet.dto.toTransactionDTO
 import it.polito.wa2group8.wallet.dto.toTransactionEntity
 import it.polito.wa2group8.wallet.repositories.TransactionRepository

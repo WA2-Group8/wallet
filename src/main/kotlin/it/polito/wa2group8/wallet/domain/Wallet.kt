@@ -14,7 +14,7 @@ class Wallet (
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customerId",referencedColumnName = "customerId")
-    var customerId: Customer,
+    var customer: Customer,
 
     @Column(name="currentAmount", nullable=false)
     @Min(0,message="The value must be a positive or zero value")
