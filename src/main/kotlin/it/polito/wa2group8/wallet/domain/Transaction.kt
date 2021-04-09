@@ -11,12 +11,12 @@ import javax.validation.constraints.Pattern
 //@Table(name = "transaction")
 class Transaction(
     @Id
-    @Column(name = "id", nullable = false)
+    @Column(name = "transaction_id", nullable = false)
     @GeneratedValue(strategy = GenerationType.AUTO)
     var transactionID: Long? = null,
 
     //The amount of money transacted
-    @DecimalMin(value="0.1", message="The transaction amount must be greater than 0")
+    @DecimalMin(value="0.0", message="The transaction amount must be greater than 0", inclusive=false)
     @Column(name = "amount", nullable = false)
     var amount: BigDecimal,
 
