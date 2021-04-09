@@ -23,6 +23,8 @@ class WalletApplication{
             customerRepository.save(c1)
             val w1 = Wallet(null,c1, 1)
             walletRepository.save(w1)
+            val w2 = Wallet(null,c1, 10)
+            walletRepository.save(w2)
         }
     }
 }
