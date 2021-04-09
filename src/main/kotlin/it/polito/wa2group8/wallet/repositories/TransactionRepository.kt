@@ -1,6 +1,7 @@
 package it.polito.wa2group8.wallet.repositories
 
 import it.polito.wa2group8.wallet.domain.Transaction
+import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
 import java.time.LocalDateTime
@@ -9,5 +10,9 @@ import java.time.LocalDateTime
 @Repository
 interface TransactionRepository : CrudRepository<Transaction, Long>
 {
-    fun findByTimeInstantBetween(before: LocalDateTime, after: LocalDateTime)
+    @Query(
+        "SELECT t FROM Transaction t WHERE t.beneficiaryWallet.walletId = ?1 OR t.payerWallet.walletId = ?1 AND t.timeInstant >= ?2 AND t.timeInstant <= ?3"
+    )
+    fun findByWalletIdAndTimeInstantBetween(walletId: Long, startDate: LocalDateTime, endDate: LocalDateTime) : Iterable<Transaction>
+
 }
