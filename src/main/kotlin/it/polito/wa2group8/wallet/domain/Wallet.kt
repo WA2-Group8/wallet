@@ -17,7 +17,7 @@ class Wallet (
     var customer: Customer,
 
     @Column(name="currentAmount", nullable=false)
-    @Min(0,message="The value must be a positive or zero value")
+    @get:Min(value= 0,message="The value must be a positive or zero value")
     var currentAmount: Long
 
 ){
