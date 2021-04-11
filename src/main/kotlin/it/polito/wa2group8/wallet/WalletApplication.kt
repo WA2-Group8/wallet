@@ -21,9 +21,9 @@ class WalletApplication{
         return CommandLineRunner{
             val c1 = Customer(1,"Lorenzo","Ceccarelli","ll","vvv")
             customerRepository.save(c1)
-            val w1 = Wallet(null,c1, 1)
+            val w1 = Wallet(null,c1, BigDecimal(1))
             walletRepository.save(w1)
-            val w2 = Wallet(null,c1, 10)
+            val w2 = Wallet(null,c1, BigDecimal(10))
             walletRepository.save(w2)
         }
     }

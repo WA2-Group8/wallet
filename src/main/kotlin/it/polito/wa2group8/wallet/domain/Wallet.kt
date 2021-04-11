@@ -18,7 +18,7 @@ class Wallet (
 
     @Column(name="currentAmount", nullable=false)
     @get:Min(value= 0,message="The value must be a positive or zero value")
-    var currentAmount: Long
+    var currentAmount: BigDecimal
 
 ){
     @OneToMany(mappedBy = "payerWallet",targetEntity=Transaction::class,fetch = FetchType.LAZY)

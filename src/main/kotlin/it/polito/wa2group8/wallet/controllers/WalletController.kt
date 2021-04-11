@@ -1,9 +1,11 @@
 package it.polito.wa2group8.wallet.controllers
 
+import it.polito.wa2group8.wallet.domain.Transaction
 import it.polito.wa2group8.wallet.dto.TransactionDTO
 import it.polito.wa2group8.wallet.services.WalletService
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
+import java.math.BigDecimal
 
 
 @RestController
@@ -28,12 +30,17 @@ class WalletController(val walletService: WalletService)
     }
     */
 
-    /*@PostMapping(value = ["/wallet/{walletId}/transaction"], produces = [MediaType.APPLICATION_JSON_VALUE])
+    @PostMapping(value = ["/wallet/{walletId}/transaction"], produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
-    fun createTransaction(@PathVariable("walletId") wallet_id: Long): Transaction?{ //poi togli ?
+    fun createTransaction(
+        @PathVariable("walletId") payer_wallet_id: Long,
+        @RequestBody beneficiary_wallet_id: Long,
+        @RequestBody amount: Double
+        ): TransactionDTO?{
+        println(payer_wallet_id)
+        return walletService.createTransaction(TransactionDTO(amount,System.currentTimeMillis(),payer_wallet_id,beneficiary_wallet_id,Transaction.TransactionTypes.Purchase))
 
-        return null
-    }*/
+    }
 
     @GetMapping(value = ["/wallets/{walletId}/transactions/{transactionId}"], produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
