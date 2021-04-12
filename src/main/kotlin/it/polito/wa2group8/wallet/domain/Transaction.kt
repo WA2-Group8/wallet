@@ -4,7 +4,6 @@ import java.math.BigDecimal
 import java.time.LocalDateTime
 import javax.persistence.*
 import javax.validation.constraints.DecimalMin
-import javax.validation.constraints.Pattern
 
 //This class maps a transaction to a DBMS
 @Entity
@@ -31,17 +30,5 @@ class Transaction(
     //The wallet which the money was given to
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "beneficiaryWallet",referencedColumnName = "walletId")
-    var beneficiaryWallet: Wallet,
-
-    //Transaction type
-    @Column(name = "transaction_type", nullable = false)
-    @get:Pattern(regexp = "purchase|recharge", message="Invalid type of transaction")
-    var transactionType: TransactionTypes
+    var beneficiaryWallet: Wallet
     )
-{
-    enum class TransactionTypes(val type: String)
-    {
-        Purchase("purchase"), //A transaction that reduces the amount of money in the wallet
-        Recharge("recharge"), //A transaction that contributes to increase the money in the wallet
-    }
-}

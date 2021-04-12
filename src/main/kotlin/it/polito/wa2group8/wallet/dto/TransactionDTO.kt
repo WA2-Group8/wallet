@@ -1,8 +1,6 @@
 package it.polito.wa2group8.wallet.dto
 
 import it.polito.wa2group8.wallet.domain.Transaction
-import it.polito.wa2group8.wallet.domain.Wallet
-import java.time.Instant
 import java.time.ZoneOffset
 
 /**
@@ -11,8 +9,7 @@ import java.time.ZoneOffset
 data class TransactionDTO(val amount: Double,
                           val dateInMillis: Long,
                           val payerWalletID: Long,
-                          val beneficiaryWalletID: Long,
-                          val type: Transaction.TransactionTypes)
+                          val beneficiaryWalletID: Long)
 
 /**
  * An extension function to translate incoming data from the Controller layer to a DTO to be provided to the Service layer
@@ -20,7 +17,6 @@ data class TransactionDTO(val amount: Double,
 fun Transaction.toTransactionDTO() = TransactionDTO(this.amount.toDouble(),
                                                     this.timeInstant.toInstant(ZoneOffset.UTC).toEpochMilli(),
                                                     this.payerWallet.walletId ?: -1,
-                                                    this.beneficiaryWallet.walletId ?: -1,
-                                                    this.transactionType)
+                                                    this.beneficiaryWallet.walletId ?: -1)
 
 

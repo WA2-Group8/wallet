@@ -2,13 +2,15 @@ package it.polito.wa2group8.wallet.services
 
 import it.polito.wa2group8.wallet.dto.TransactionDTO
 import it.polito.wa2group8.wallet.dto.WalletDTO
+import java.math.BigDecimal
 import java.time.LocalDateTime
 
 interface WalletService {
     /**
      * Create a new wallet for a certain customer
+     * Return the DTO of the created wallet or null in case of error.
      */
-    fun createWallet (walletDTO: WalletDTO) : WalletDTO?
+    fun createWallet (customerId: Long) : WalletDTO?
 
     /**
      * Get the details of a wallet given its ID.
@@ -17,10 +19,10 @@ interface WalletService {
     fun getWalletById(id: Long) : WalletDTO?
 
     /**
-     * Create a new transaction if it didn't already exist
+     * Create a new transaction if it did not already exist
      * Return the DTO of the created transaction or null in case of error.
      */
-    fun createTransaction(transactionDTO: TransactionDTO) : TransactionDTO?
+    fun createTransaction(payerWalletID: Long, transactionDTO: TransactionDTO) : TransactionDTO?
 
     /**
      * Get the list of transactions given a walletID between two dates.
@@ -32,5 +34,5 @@ interface WalletService {
      * Get the details of a transaction given its ID.
      * A nullable TransactionDTO objects is returned since a transaction ID might not even exist.
      */
-    fun getTransactionById(transactionId: Long) : TransactionDTO?
+    fun getTransactionById(walletId: Long, transactionId: Long) : TransactionDTO?
 }

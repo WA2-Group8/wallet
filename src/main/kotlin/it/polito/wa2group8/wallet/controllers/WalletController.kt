@@ -1,12 +1,9 @@
 package it.polito.wa2group8.wallet.controllers
 
-import it.polito.wa2group8.wallet.domain.Transaction
 import it.polito.wa2group8.wallet.dto.TransactionDTO
 import it.polito.wa2group8.wallet.services.WalletService
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
-import java.math.BigDecimal
-
 
 @RestController
 class WalletController(val walletService: WalletService)
@@ -34,12 +31,10 @@ class WalletController(val walletService: WalletService)
     @ResponseBody
     fun createTransaction(
         @PathVariable("walletId") payer_wallet_id: Long,
-        @RequestBody beneficiary_wallet_id: Long,
-        @RequestBody amount: Double
-        ): TransactionDTO?{
-        println(payer_wallet_id)
-        return walletService.createTransaction(TransactionDTO(amount,System.currentTimeMillis(),payer_wallet_id,beneficiary_wallet_id,Transaction.TransactionTypes.Purchase))
-
+        @RequestBody transaction: TransactionDTO
+    ): TransactionDTO? {
+        // TODO(Handle exceptions)
+        return walletService.createTransaction(payer_wallet_id, transaction)
     }
 
     @GetMapping(value = ["/wallets/{walletId}/transactions/{transactionId}"], produces = [MediaType.APPLICATION_JSON_VALUE])
@@ -48,8 +43,7 @@ class WalletController(val walletService: WalletService)
         @PathVariable("walletId") walletId: Long,
         @PathVariable("transactionId") transactionId: Long): TransactionDTO?
     {
-        val transaction = walletService.getTransactionById(transactionId)
-        println(transaction)
-        return transaction
+        // TODO(Handle exception)
+        return walletService.getTransactionById(walletId, transactionId)
     }
 }

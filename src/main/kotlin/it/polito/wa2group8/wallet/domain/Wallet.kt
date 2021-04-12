@@ -1,12 +1,11 @@
 package it.polito.wa2group8.wallet.domain
 
-
 import java.math.BigDecimal
 import javax.persistence.*
 import javax.validation.constraints.Min
 
 @Entity
-@Table(name="Wallet")
+//@Table(name="Wallet")
 class Wallet (
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)

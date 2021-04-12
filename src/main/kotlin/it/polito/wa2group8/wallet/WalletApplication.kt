@@ -10,10 +10,6 @@ import org.springframework.boot.runApplication
 import org.springframework.context.annotation.Bean
 import java.math.BigDecimal
 
-
-
-
-
 @SpringBootApplication
 class WalletApplication{
     @Bean
