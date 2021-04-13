@@ -6,6 +6,9 @@ import it.polito.wa2group8.wallet.dto.TransactionDTO
 import it.polito.wa2group8.wallet.dto.WalletDTO
 import it.polito.wa2group8.wallet.dto.toTransactionDTO
 import it.polito.wa2group8.wallet.dto.toWalletDTO
+import it.polito.wa2group8.wallet.exceptions.BadRequestException
+import it.polito.wa2group8.wallet.exceptions.ForbiddenException
+import it.polito.wa2group8.wallet.exceptions.NotFoundException
 import it.polito.wa2group8.wallet.repositories.CustomerRepository
 import it.polito.wa2group8.wallet.repositories.TransactionRepository
 import it.polito.wa2group8.wallet.repositories.WalletRepository
@@ -27,7 +30,7 @@ class WalletServiceImpl(
 
     override fun createWallet (customerId: Long) : WalletDTO? {
         // Get Customer
-        val customer = customerRepo.findByIdOrNull(customerId) ?: throw RuntimeException("Customer not found")
+        val customer = customerRepo.findByIdOrNull(customerId) ?: throw NotFoundException("Customer not found")
 
         // Create Wallet entity
         val wallet = Wallet(null, customer, BigDecimal(0))
@@ -37,23 +40,26 @@ class WalletServiceImpl(
     }
 
     override fun getWalletById(id: Long) : WalletDTO? {
-        return walletRepo.findByIdOrNull(id)?.toWalletDTO()
+        return walletRepo.findByIdOrNull(id)?.toWalletDTO() ?: throw NotFoundException("Wallet Not Found")
     }
 
     override fun createTransaction(payerWalletID: Long, transactionDTO: TransactionDTO) : TransactionDTO? {
+        // Check amount
+        if(transactionDTO.amount <= 0) throw BadRequestException("Amount must be more than zero")
+
         // Check if payer and beneficiary are different
-        if(payerWalletID == transactionDTO.beneficiaryWalletID) throw RuntimeException("Beneficiary and Payer wallet must be different")
+        if(payerWalletID == transactionDTO.beneficiaryWalletID) throw BadRequestException("Beneficiary and Payer wallet must be different")
 
         // Get wallets
-        val payerWallet = walletRepo.findByIdOrNull(payerWalletID) ?: throw RuntimeException("Payer wallet not found")
-        val beneficiaryWallet = walletRepo.findByIdOrNull(transactionDTO.beneficiaryWalletID) ?: throw RuntimeException("Beneficiary wallet not found")
+        val payerWallet = walletRepo.findByIdOrNull(payerWalletID) ?: throw NotFoundException("Payer wallet not found")
+        val beneficiaryWallet = walletRepo.findByIdOrNull(transactionDTO.beneficiaryWalletID) ?: throw NotFoundException("Beneficiary wallet not found")
 
         // Create Transaction entity
         val transaction = Transaction(null, transactionDTO.amount.toBigDecimal(), LocalDateTime.now(), payerWallet, beneficiaryWallet)
 
         // Check if currentAmount is sufficient
         if(payerWallet.currentAmount < transaction.amount)
-            throw RuntimeException("Payer money not sufficient")
+            throw BadRequestException("Payer money not sufficient")
 
         // Update payer wallet
         payerWallet.currentAmount -= transaction.amount
@@ -68,11 +74,25 @@ class WalletServiceImpl(
     }
 
     override fun getTransactionsByWalletId(walletId: Long, startDate: LocalDateTime, endDate: LocalDateTime) : List<TransactionDTO> {
+        // Check if wallet exist
+        if(!walletRepo.existsById(walletId)) throw NotFoundException("Wallet not found")
+
+        // Get transactions of the specified wallet
         return transactionRepo.findByWalletIdAndTimeInstantBetween(walletId, endDate, startDate).map { t -> t.toTransactionDTO() }
     }
 
     override fun getTransactionById(walletId: Long, transactionId: Long) : TransactionDTO? {
-        //TODO(Check Wallet)
-        return transactionRepo.findByIdOrNull(transactionId)?.toTransactionDTO()
+        // Check if wallet exist
+        if(!walletRepo.existsById(walletId)) throw NotFoundException("Wallet not found")
+
+        // Get transaction
+        val transaction = transactionRepo.findByIdOrNull(transactionId)?.toTransactionDTO()
+            ?: throw NotFoundException("Transaction not found")
+
+        // Check if transaction is related to the wallet
+        if(walletId != transaction.beneficiaryWalletID && walletId != transaction.beneficiaryWalletID)
+            throw ForbiddenException("Access not allowed")
+
+        return transaction
     }
 }
