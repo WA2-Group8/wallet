@@ -10,6 +10,15 @@ data class TransactionDTO(val amount: Double,
                           val dateInMillis: Long,
                           val payerWalletID: Long,
                           val beneficiaryWalletID: Long)
+{
+    override fun toString(): String
+    {
+        return  "payerWallet = ${this.payerWalletID}\n" +
+                "beneficiaryWalletID = ${this.beneficiaryWalletID}\n" +
+                "amount = ${this.amount}\n" +
+                "dateInMillis = ${this.dateInMillis}"
+    }
+}
 
 /**
  * An extension function to translate incoming data from the Controller layer to a DTO to be provided to the Service layer

@@ -4,6 +4,7 @@ import it.polito.wa2group8.wallet.dto.TransactionDTO
 import it.polito.wa2group8.wallet.dto.WalletDTO
 import it.polito.wa2group8.wallet.services.WalletService
 import org.springframework.http.MediaType
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -51,9 +52,16 @@ class WalletController(val walletService: WalletService)
     @ResponseBody
     fun getTransactionById(
         @PathVariable("walletId") walletId: Long,
-        @PathVariable("transactionId") transactionId: Long): TransactionDTO?
+        @PathVariable("transactionId") transactionId: Long): ResponseEntity<String>
     {
         // TODO(Handle exception)
-        return walletService.getTransactionById(walletId, transactionId)
+        val transactionRetrieved = walletService.getTransactionById(walletId, transactionId)
+
+        return if (transactionRetrieved != null)
+            ResponseEntity.ok()
+                .header("Header AAA", "Test header")
+                .body(transactionRetrieved.toString())
+        else
+            ResponseEntity.noContent().build()
     }
 }
