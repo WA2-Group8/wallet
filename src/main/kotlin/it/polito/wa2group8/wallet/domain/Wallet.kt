@@ -2,10 +2,9 @@ package it.polito.wa2group8.wallet.domain
 
 import java.math.BigDecimal
 import javax.persistence.*
-import javax.validation.constraints.Min
+import javax.validation.constraints.DecimalMin
 
 @Entity
-//@Table(name="Wallet")
 class Wallet (
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
@@ -16,7 +15,7 @@ class Wallet (
     var customer: Customer,
 
     @Column(name="currentAmount", nullable=false)
-    @get:Min(value= 0,message="The value must be a positive or zero value")
+    @get:DecimalMin(value="0.0", message="The value must be a positive or zero value", inclusive=true)
     var currentAmount: BigDecimal
 
 ){

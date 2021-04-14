@@ -5,6 +5,4 @@ import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface WalletRepository : CrudRepository<Wallet,Long>{
-    //fun findWalletByWalletId(id: Long): Wallet
-}
+interface WalletRepository : CrudRepository<Wallet,Long>

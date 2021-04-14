@@ -2,8 +2,6 @@ package it.polito.wa2group8.wallet.services
 
 import it.polito.wa2group8.wallet.dto.TransactionDTO
 import it.polito.wa2group8.wallet.dto.WalletDTO
-import java.math.BigDecimal
-import java.time.LocalDateTime
 
 interface WalletService {
     /**
@@ -28,7 +26,7 @@ interface WalletService {
      * Get the list of transactions given a walletID between two dates.
      * An empty list will be returned if no transaction meets the requirements.
      */
-    fun getTransactionsByWalletId(walletId: Long, startDate: LocalDateTime, endDate: LocalDateTime) : List<TransactionDTO>
+    fun getTransactionsByWalletId(walletId: Long, startDate: Long, endDate: Long) : List<TransactionDTO>
 
     /**
      * Get the details of a transaction given its ID.

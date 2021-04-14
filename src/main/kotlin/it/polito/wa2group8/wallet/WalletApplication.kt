@@ -15,12 +15,18 @@ class WalletApplication{
     @Bean
     fun test(walletRepository : WalletRepository,customerRepository : CustomerRepository) : CommandLineRunner{
         return CommandLineRunner{
-            val c1 = Customer(1,"Lorenzo","Ceccarelli","ll","vvv")
+            val c1 = Customer(null,"Joe","Doe","joeDoe@email.com","ViaNumero3")
             customerRepository.save(c1)
-            val w1 = Wallet(null,c1, BigDecimal(1))
-            walletRepository.save(w1)
-            val w2 = Wallet(null,c1, BigDecimal(10))
-            walletRepository.save(w2)
+            val c2 = Customer(null,"John","Smith","johnSmith@email.com","ViaNumero0")
+            customerRepository.save(c2)
+            val c3 = Customer(null,"Gertrude","White","gertrudeWhite@email.com","ViaNumero1")
+            customerRepository.save(c3)
+            val c17 = Customer(null,"Androide","Diciasette","c17@email.com","ViaNumero17")
+            customerRepository.save(c17)
+            val cBank = Customer(null,"Banca", "DeiPoveri","truffa@email.com","Zurigo")
+            customerRepository.save(cBank)
+            val bank = Wallet(null,cBank,BigDecimal(1000000000.99))
+            walletRepository.save((bank))
         }
     }
 }

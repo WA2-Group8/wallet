@@ -1,10 +1,9 @@
-package it.polito.wa2group8.wallet.domain;
+package it.polito.wa2group8.wallet.domain
 
 
-import javax.persistence.*;
+import javax.persistence.*
 
 @Entity
-//@Table(name = customers)
 class Customer(
     @Id
     @GeneratedValue

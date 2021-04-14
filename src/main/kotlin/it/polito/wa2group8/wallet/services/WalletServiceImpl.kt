@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional
 import java.math.BigDecimal
 import java.time.Instant
 import java.time.LocalDateTime
-import java.time.ZoneId
+import java.time.ZoneOffset
 
 @Service
 @Transactional
@@ -44,18 +44,16 @@ class WalletServiceImpl(
     }
 
     override fun createTransaction(payerWalletID: Long, transactionDTO: TransactionDTO) : TransactionDTO? {
-        // Check amount
-        if(transactionDTO.amount <= 0) throw BadRequestException("Amount must be more than zero")
 
         // Check if payer and beneficiary are different
         if(payerWalletID == transactionDTO.beneficiaryWalletID) throw BadRequestException("Beneficiary and Payer wallet must be different")
 
         // Get wallets
         val payerWallet = walletRepo.findByIdOrNull(payerWalletID) ?: throw NotFoundException("Payer wallet not found")
-        val beneficiaryWallet = walletRepo.findByIdOrNull(transactionDTO.beneficiaryWalletID) ?: throw NotFoundException("Beneficiary wallet not found")
+        val beneficiaryWallet = walletRepo.findByIdOrNull(transactionDTO.beneficiaryWalletID ?: -1) ?: throw NotFoundException("Beneficiary wallet not found")
 
         // Create Transaction entity
-        val transaction = Transaction(null, transactionDTO.amount.toBigDecimal(), LocalDateTime.now(), payerWallet, beneficiaryWallet)
+        val transaction = Transaction(null, transactionDTO.amount!!, LocalDateTime.now(), payerWallet, beneficiaryWallet)
 
         // Check if currentAmount is sufficient
         if(payerWallet.currentAmount < transaction.amount)
@@ -73,12 +71,19 @@ class WalletServiceImpl(
         return transactionRepo.save(transaction).toTransactionDTO()
     }
 
-    override fun getTransactionsByWalletId(walletId: Long, startDate: LocalDateTime, endDate: LocalDateTime) : List<TransactionDTO> {
+    override fun getTransactionsByWalletId(walletId: Long, startDate: Long, endDate: Long) : List<TransactionDTO> {
+        //Check if endDate > startDate
+        if(endDate<startDate) throw  BadRequestException("End date must be after start date")
+
         // Check if wallet exist
         if(!walletRepo.existsById(walletId)) throw NotFoundException("Wallet not found")
 
+        // Converting date
+        val start = Instant.ofEpochMilli(startDate).atZone(ZoneOffset.UTC).toLocalDateTime()
+        val end = Instant.ofEpochMilli(endDate).atZone(ZoneOffset.UTC).toLocalDateTime()
+
         // Get transactions of the specified wallet
-        return transactionRepo.findByWalletIdAndTimeInstantBetween(walletId, endDate, startDate).map { t -> t.toTransactionDTO() }
+        return transactionRepo.findByWalletIdAndTimeInstantBetween(walletId, start, end).map { t -> t.toTransactionDTO() }
     }
 
     override fun getTransactionById(walletId: Long, transactionId: Long) : TransactionDTO? {
@@ -90,7 +95,7 @@ class WalletServiceImpl(
             ?: throw NotFoundException("Transaction not found")
 
         // Check if transaction is related to the wallet
-        if(walletId != transaction.beneficiaryWalletID && walletId != transaction.beneficiaryWalletID)
+        if(walletId != transaction.beneficiaryWalletID && walletId != transaction.payerWalletID)
             throw ForbiddenException("Access not allowed")
 
         return transaction

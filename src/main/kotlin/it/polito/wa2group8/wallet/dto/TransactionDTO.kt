@@ -1,31 +1,27 @@
 package it.polito.wa2group8.wallet.dto
 
 import it.polito.wa2group8.wallet.domain.Transaction
+import java.math.BigDecimal
 import java.time.ZoneOffset
+import javax.validation.constraints.DecimalMin
+import javax.validation.constraints.Min
+import javax.validation.constraints.Positive
 
 /**
  * This data class models an information offered/consumed by the service
  */
-data class TransactionDTO(val amount: Double,
-                          val dateInMillis: Long,
-                          val payerWalletID: Long,
-                          val beneficiaryWalletID: Long)
-{
-    override fun toString(): String
-    {
-        return  "payerWallet = ${this.payerWalletID}\n" +
-                "beneficiaryWalletID = ${this.beneficiaryWalletID}\n" +
-                "amount = ${this.amount}\n" +
-                "dateInMillis = ${this.dateInMillis}"
-    }
-}
+data class TransactionDTO(@get:DecimalMin(value="0.0", inclusive=false) val amount: BigDecimal?,
+                          @get:Min(0) val dateInMillis: Long?,
+                          @get:Positive(message="Invalid payerWalletId") val payerWalletID: Long?,
+                          @get:Positive(message="Invalid beneficiaryWalletId") val beneficiaryWalletID: Long?)
+
 
 /**
  * An extension function to translate incoming data from the Controller layer to a DTO to be provided to the Service layer
  */
-fun Transaction.toTransactionDTO() = TransactionDTO(this.amount.toDouble(),
-                                                    this.timeInstant.toInstant(ZoneOffset.UTC).toEpochMilli(),
-                                                    this.payerWallet.walletId ?: -1,
-                                                    this.beneficiaryWallet.walletId ?: -1)
+fun Transaction.toTransactionDTO() = TransactionDTO(amount,
+                                                    timeInstant.toInstant(ZoneOffset.UTC).toEpochMilli(),
+                                         payerWallet.walletId ?: -1,
+                                     beneficiaryWallet.walletId ?: -1)
 
 

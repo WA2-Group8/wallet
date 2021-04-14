@@ -11,7 +11,7 @@ import java.time.LocalDateTime
 interface TransactionRepository : CrudRepository<Transaction, Long>
 {
     @Query(
-        "SELECT t FROM Transaction t WHERE t.beneficiaryWallet.walletId = ?1 OR t.payerWallet.walletId = ?1 AND t.timeInstant >= ?2 AND t.timeInstant <= ?3"
+        "SELECT t FROM Transaction t WHERE (t.beneficiaryWallet.walletId = ?1 OR t.payerWallet.walletId = ?1) AND t.timeInstant >= ?2 AND t.timeInstant <= ?3"
     )
     fun findByWalletIdAndTimeInstantBetween(walletId: Long, startDate: LocalDateTime, endDate: LocalDateTime) : Iterable<Transaction>
 
