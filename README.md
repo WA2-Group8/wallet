@@ -2,7 +2,7 @@
 
 ## Team Members
 
--- Lorenzo Ceccarelli
--- Giandonato Farina
--- Riccardo Tedesco
--- Fabio Salinardi
+* Lorenzo Ceccarelli
+* Giandonato Farina
+* Riccardo Tedesco
+* Fabio Salinardi
