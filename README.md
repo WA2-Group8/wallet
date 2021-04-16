@@ -1,6 +1,6 @@
 # Laboratory 2: Wallet Service of an e-commerce micro-service application
 
-## Team Members
+## Team 8 Members
 
 * Lorenzo Ceccarelli
 * Giandonato Farina
