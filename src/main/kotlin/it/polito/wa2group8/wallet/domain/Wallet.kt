@@ -20,8 +20,8 @@ class Wallet (
 
 ){
     @OneToMany(mappedBy = "payerWallet",targetEntity=Transaction::class,fetch = FetchType.LAZY)
-    var pList: MutableList<Transaction> = mutableListOf() //Purchases list
+    var pList: MutableSet<Transaction> = mutableSetOf() //Purchases list
 
     @OneToMany(mappedBy = "beneficiaryWallet",targetEntity=Transaction::class,fetch = FetchType.LAZY)
-    var rList: MutableList<Transaction> = mutableListOf() // Recharges list
+    var rList: MutableSet<Transaction> = mutableSetOf() // Recharges list
 }

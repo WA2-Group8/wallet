@@ -21,5 +21,5 @@ class Customer(
     var user: User
 ){
     @OneToMany(mappedBy = "walletId", targetEntity = Wallet::class, fetch = FetchType.LAZY)
-    var walletList: MutableList<Wallet> = mutableListOf()
+    var walletList: MutableSet<Wallet> = mutableSetOf()
 }

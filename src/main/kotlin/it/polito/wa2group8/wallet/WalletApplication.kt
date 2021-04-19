@@ -6,16 +6,18 @@ import it.polito.wa2group8.wallet.domain.Wallet
 import it.polito.wa2group8.wallet.repositories.CustomerRepository
 import it.polito.wa2group8.wallet.repositories.UserRepository
 import it.polito.wa2group8.wallet.repositories.WalletRepository
+import it.polito.wa2group8.wallet.services.UserDetailsService
 import org.springframework.boot.CommandLineRunner
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.context.annotation.Bean
 import java.math.BigDecimal
+import it.polito.wa2group8.wallet.dto.UserDetailsDTO
 
 @SpringBootApplication
 class WalletApplication{
     @Bean
-    fun test(walletRepository : WalletRepository,customerRepository : CustomerRepository, userRepository: UserRepository) : CommandLineRunner{
+    fun test(walletRepository : WalletRepository,customerRepository : CustomerRepository, userRepository: UserRepository,userService: UserDetailsService) : CommandLineRunner{
         return CommandLineRunner{
             /*val c1 = Customer(null,"Joe","Doe","joeDoe@email.com","ViaNumero3")
             customerRepository.save(c1)
@@ -36,11 +38,16 @@ class WalletApplication{
             val u5 = User(null,"loren","passwordsicurissima","ciao@mail1.it",roles="CUSTOMER")
             val u6 = User(null,"lore","passwordsicurissima","ciao@mail2.it",roles="CUSTOMER,ADMIN")
             userRepository.saveAll(listOf(u4,u5,u6))
-            val u = userRepository.findByUsername("loren")
+            /*val u = userRepository.findByUsername("loren")
             u?.addRolename("ADMIN")
             println(u?.getRolenames())
             u?.removeRolename("CUSTOMER")
-            println(u?.getRolenames())
+            println(u?.getRolenames())*/
+            //try {
+                userService.createUser(UserDetailsDTO(null, "lorenz", "klfdvk", "cioa@vv.com", "CUSTOMER"))
+            /*} catch(ex: RuntimeException){
+                println(ex.message)
+            }*/
 
         }
     }
