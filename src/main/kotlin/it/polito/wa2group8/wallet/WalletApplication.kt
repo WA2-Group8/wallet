@@ -1,8 +1,10 @@
 package it.polito.wa2group8.wallet
 
 import it.polito.wa2group8.wallet.domain.Customer
+import it.polito.wa2group8.wallet.domain.User
 import it.polito.wa2group8.wallet.domain.Wallet
 import it.polito.wa2group8.wallet.repositories.CustomerRepository
+import it.polito.wa2group8.wallet.repositories.UserRepository
 import it.polito.wa2group8.wallet.repositories.WalletRepository
 import org.springframework.boot.CommandLineRunner
 import org.springframework.boot.autoconfigure.SpringBootApplication
@@ -13,9 +15,9 @@ import java.math.BigDecimal
 @SpringBootApplication
 class WalletApplication{
     @Bean
-    fun test(walletRepository : WalletRepository,customerRepository : CustomerRepository) : CommandLineRunner{
+    fun test(walletRepository : WalletRepository,customerRepository : CustomerRepository, userRepository: UserRepository) : CommandLineRunner{
         return CommandLineRunner{
-            val c1 = Customer(null,"Joe","Doe","joeDoe@email.com","ViaNumero3")
+            /*val c1 = Customer(null,"Joe","Doe","joeDoe@email.com","ViaNumero3")
             customerRepository.save(c1)
             val c2 = Customer(null,"John","Smith","johnSmith@email.com","ViaNumero0")
             customerRepository.save(c2)
@@ -26,7 +28,20 @@ class WalletApplication{
             val cBank = Customer(null,"Banca", "DeiPoveri","truffa@email.com","Zurigo")
             customerRepository.save(cBank)
             val bank = Wallet(null,cBank,BigDecimal(1000000000.99))
-            walletRepository.save((bank))
+            walletRepository.save((bank))*/
+            //val u1 = User(null,"","passwordsicurissima","m@v.it",roles="")
+            //val u2 = User(null,"lorenzo","passwordsicurissima","ciao",roles="")
+            //val u3 = User(null,"lorenz","passwordsicurissima","ciao@mail.it",roles="")
+            val u4 = User(null,"lorenz","passwordsicurissima","ciao@mail.it",roles="")
+            val u5 = User(null,"loren","passwordsicurissima","ciao@mail1.it",roles="CUSTOMER")
+            val u6 = User(null,"lore","passwordsicurissima","ciao@mail2.it",roles="CUSTOMER,ADMIN")
+            userRepository.saveAll(listOf(u4,u5,u6))
+            val u = userRepository.findByUsername("loren")
+            u?.addRolename("ADMIN")
+            println(u?.getRolenames())
+            u?.removeRolename("CUSTOMER")
+            println(u?.getRolenames())
+
         }
     }
 }

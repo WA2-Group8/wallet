@@ -15,7 +15,10 @@ class Customer(
     @Column(nullable = false, unique = true)
     var email: String,
     @Column(nullable = false)
-    var deliveryAddress: String
+    var deliveryAddress: String,
+    @OneToOne(cascade = [CascadeType.ALL])
+    @JoinColumn(name="userId",referencedColumnName = "userId")
+    var user: User
 ){
     @OneToMany(mappedBy = "walletId", targetEntity = Wallet::class, fetch = FetchType.LAZY)
     var walletList: MutableList<Wallet> = mutableListOf()
