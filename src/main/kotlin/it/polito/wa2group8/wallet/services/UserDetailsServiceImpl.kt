@@ -1,8 +1,10 @@
 package it.polito.wa2group8.wallet.services
 
 import it.polito.wa2group8.wallet.domain.User
+import it.polito.wa2group8.wallet.dto.SignInBody
 import it.polito.wa2group8.wallet.dto.UserDetailsDTO
 import it.polito.wa2group8.wallet.dto.toUserDetailsDTO
+import it.polito.wa2group8.wallet.exceptions.InvalidAuthException
 import it.polito.wa2group8.wallet.exceptions.NotFoundException
 import it.polito.wa2group8.wallet.repositories.UserRepository
 import org.hibernate.exception.ConstraintViolationException
@@ -52,4 +54,12 @@ class UserDetailsServiceImpl(
         TODO("Not yet implemented")
     }
 
+    override fun doLogin(info: SignInBody)
+    {
+        //TODO("Compute password hash")
+        val user = userRepository.findByUsername(info.username)
+        if (user == null || user.password != info.password)
+            throw InvalidAuthException("Incorrect username and/or password")
+        //If I'm here, username and password are both valid.
+    }
 }

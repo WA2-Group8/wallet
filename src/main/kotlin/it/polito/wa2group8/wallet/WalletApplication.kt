@@ -44,7 +44,7 @@ class WalletApplication{
             u?.removeRolename("CUSTOMER")
             println(u?.getRolenames())*/
             //try {
-                userService.createUser(UserDetailsDTO(null, "lorenz", "klfdvk", "cioa@vv.com", "CUSTOMER"))
+                //userService.createUser(UserDetailsDTO(null, "lorenz", "klfdvk", "cioa@vv.com", "CUSTOMER"))
             /*} catch(ex: RuntimeException){
                 println(ex.message)
             }*/
