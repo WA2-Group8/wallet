@@ -44,7 +44,6 @@ class WalletServiceImpl(
     }
 
     override fun createTransaction(payerWalletID: Long, transactionDTO: TransactionDTO) : TransactionDTO? {
-
         // Check if payer and beneficiary are different
         if(payerWalletID == transactionDTO.beneficiaryWalletID) throw BadRequestException("Beneficiary and Payer wallet must be different")
 

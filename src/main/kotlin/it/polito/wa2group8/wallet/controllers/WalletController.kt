@@ -49,8 +49,8 @@ class WalletController(val walletService: WalletService)
         @PathVariable("walletId") payer_wallet_id: Long,
         @RequestBody @Valid transaction: TransactionDTO,
         bindingResult: BindingResult
-    ): ResponseEntity<Any> {
-
+    ): ResponseEntity<Any>
+    {
         if(bindingResult.hasErrors()) return ResponseEntity.badRequest().body(bindingResult.getFieldError("amount")?.defaultMessage)
 
         return try {
@@ -77,9 +77,7 @@ class WalletController(val walletService: WalletService)
         }catch (ex: NotFoundException) {
             ResponseEntity.status(404).body(ex.message)
         }
-
     }
-
 
     @GetMapping(value = ["/wallet/{walletId}/transactions/{transactionId}"], produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
@@ -88,7 +86,6 @@ class WalletController(val walletService: WalletService)
         @PathVariable("transactionId") transactionId: Long
     ): ResponseEntity<Any>
     {
-
         return try{
             ResponseEntity.ok().body(walletService.getTransactionById(walletId, transactionId))
         } catch(ex: ForbiddenException){
@@ -96,7 +93,5 @@ class WalletController(val walletService: WalletService)
         } catch (ex: NotFoundException) {
             ResponseEntity.status(404).body(ex.message)
         }
-
-
     }
 }

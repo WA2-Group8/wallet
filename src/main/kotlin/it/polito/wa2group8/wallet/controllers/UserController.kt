@@ -1,8 +1,11 @@
 package it.polito.wa2group8.wallet.controllers
 
 import it.polito.wa2group8.wallet.dto.SignInBody
+import it.polito.wa2group8.wallet.dto.UserDetailsDTO
+import it.polito.wa2group8.wallet.exceptions.BadRequestException
 import it.polito.wa2group8.wallet.exceptions.InvalidAuthException
 import it.polito.wa2group8.wallet.services.UserDetailsServiceImpl
+import org.hibernate.exception.ConstraintViolationException
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.BindingResult
@@ -32,6 +35,27 @@ class UserController(val userDetailsService: UserDetailsServiceImpl)
         catch (ex: InvalidAuthException)
         {
             ResponseEntity.status(401).body(ex.message)
+        }
+    }
+
+    @PostMapping(value=["/auth/register"], produces=[MediaType.APPLICATION_JSON_VALUE])
+    @ResponseBody
+    fun register(
+        @RequestBody @Valid userDetails: UserDetailsDTO,
+        bindingResult: BindingResult
+    ): ResponseEntity<Any> {
+        // Check validation results
+        if(bindingResult.hasErrors())
+            return ResponseEntity.badRequest().body(
+                bindingResult.fieldErrors.map { f -> f.field + " " + f.defaultMessage })
+        // Check password
+        if(userDetails.password != userDetails.confirmPassword)
+            return ResponseEntity.badRequest().body("Password and confirmPassword do not match")
+        // Add new user
+        return try {
+            ResponseEntity.status(201).body(userDetailsService.createUser(userDetails))
+        } catch (ex: BadRequestException) {
+            ResponseEntity.badRequest().body(ex.message)
         }
     }
 }
