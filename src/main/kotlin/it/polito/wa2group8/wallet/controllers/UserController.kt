@@ -4,8 +4,7 @@ import it.polito.wa2group8.wallet.dto.SignInBody
 import it.polito.wa2group8.wallet.dto.UserDetailsDTO
 import it.polito.wa2group8.wallet.exceptions.BadRequestException
 import it.polito.wa2group8.wallet.exceptions.InvalidAuthException
-import it.polito.wa2group8.wallet.services.UserDetailsServiceImpl
-import org.hibernate.exception.ConstraintViolationException
+import it.polito.wa2group8.wallet.services.UserDetailsService
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.BindingResult
@@ -13,7 +12,7 @@ import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 
 @RestController
-class UserController(val userDetailsService: UserDetailsServiceImpl)
+class UserController(val userDetailsService: UserDetailsService)
 {
     @PostMapping(value = ["/auth/signin"], produces=[MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody

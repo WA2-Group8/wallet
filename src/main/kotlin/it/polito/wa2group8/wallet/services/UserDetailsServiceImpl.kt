@@ -7,20 +7,38 @@ import it.polito.wa2group8.wallet.dto.toUserDetailsDTO
 import it.polito.wa2group8.wallet.exceptions.BadRequestException
 import it.polito.wa2group8.wallet.exceptions.InvalidAuthException
 import it.polito.wa2group8.wallet.repositories.UserRepository
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.net.InetAddress
+
 
 @Service
 @Transactional
 class UserDetailsServiceImpl(
-    val userRepository: UserRepository
+    val userRepository: UserRepository,
+    val mailService: MailService,
+    val notificationService: NotificationService
 ): UserDetailsService {
+
+    @Autowired
+    private val webServerAppContext: ServletWebServerApplicationContext? = null
+
     override fun createUser(userDetails: UserDetailsDTO): UserDetailsDTO? {
+        // Check if username is already in the DB
         if(userRepository.findByUsername(userDetails.username) != null)
             throw BadRequestException("Username already exist")
-
-        val user = User(null, userDetails.username, userDetails.password!!, userDetails.email, roles="CUSTOMER")
-        return userRepository.save(user).toUserDetailsDTO()
+        // Save user in the DB
+        val user = userRepository.save(User(null, userDetails.username, userDetails.password!!, userDetails.email, roles="CUSTOMER"))
+        // Create email message
+        val token = notificationService.createEmailVerificationToken(user)
+        val hostname = InetAddress.getLocalHost().hostAddress
+        val port = webServerAppContext?.webServer?.port
+        val text = "http://$hostname:$port/auth/registrationConfirm?token=$token"
+        // Send email
+        mailService.sendMessage(user.email, "Confirm your registration", text)
+        return user.toUserDetailsDTO()
     }
 
     override fun addRoleToUser(role: String, username: String) {

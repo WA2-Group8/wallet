@@ -14,11 +14,12 @@ import java.util.*
 class NotificationServiceImpl(
     val emailVerificationTokenRepository: EmailVerificationTokenRepository
 ) : NotificationService{
-    override fun createEmailVerificationToken(user: User) {
+    override fun createEmailVerificationToken(user: User) : String{
         val token = UUID.randomUUID().toString()
         val timestamp = Timestamp(System.currentTimeMillis())
         val emailVerificationToken = EmailVerificationToken(null, timestamp, token, user)
         emailVerificationTokenRepository.save(emailVerificationToken)
+        return token
     }
 
 }
