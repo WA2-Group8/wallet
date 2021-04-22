@@ -1,6 +1,8 @@
 package it.polito.wa2group8.wallet.services
 
+import it.polito.wa2group8.wallet.domain.Rolename
 import it.polito.wa2group8.wallet.domain.User
+import it.polito.wa2group8.wallet.domain.enumContains
 import it.polito.wa2group8.wallet.dto.SignInBody
 import it.polito.wa2group8.wallet.dto.UserDetailsDTO
 import it.polito.wa2group8.wallet.dto.toUserDetailsDTO
@@ -19,28 +21,36 @@ class UserDetailsServiceImpl(
         if(userRepository.findByUsername(userDetails.username) != null)
             throw BadRequestException("Username already exist")
 
-        val user = User(null, userDetails.username, userDetails.password!!, userDetails.email, roles="CUSTOMER")
+        val roles = userDetails.roles?.split(',') ?: throw BadRequestException("Roles not valid")
+        roles.forEach{if(!enumContains<Rolename>(it)) throw throw BadRequestException("Roles not valid")}
+
+        val user = User(null, userDetails.username, userDetails.password!!, userDetails.email, roles=userDetails.roles!!)
         return userRepository.save(user).toUserDetailsDTO()
     }
 
     override fun addRoleToUser(role: String, username: String) {
-        //userRepository.findByUsername(user.username!!) ?: throw RuntimeException("Customer not found")
+        val user = userRepository.findByUsername(username) ?: throw BadRequestException("Username does not exist")
+        user.addRolename(role)
     }
 
     override fun removeRoleToUser(role: String, username: String) {
-        TODO("Not yet implemented")
+        val user = userRepository.findByUsername(username) ?: throw BadRequestException("Username does not exist")
+        user.removeRolename(role)
     }
 
     override fun enableUser(username: String) {
-        TODO("Not yet implemented")
+        if(userRepository.findByUsername(username) == null) throw BadRequestException("Username does not exist")
+        userRepository.enableUser(username)
     }
 
     override fun disableUser(username: String) {
-        TODO("Not yet implemented")
+        if(userRepository.findByUsername(username) == null) throw BadRequestException("Username does not exist")
+        userRepository.disableUser(username)
     }
 
     override fun loadUserByUsername(username: String): UserDetailsDTO {
-        TODO("Not yet implemented")
+        val user = userRepository.findByUsername(username) ?: throw BadRequestException("Username does not exist")
+        return user.toUserDetailsDTO()
     }
 
     override fun doLogin(info: SignInBody)

@@ -5,6 +5,14 @@ import javax.validation.Valid
 import javax.validation.constraints.Email
 import javax.validation.constraints.NotEmpty
 
+enum class Rolename {
+    CUSTOMER,
+    ADMIN
+}
+
+inline fun <reified T : Enum<T>> enumContains(name: String): Boolean {
+    return enumValues<T>().any { it.name == name}
+}
 
 @Entity
 @Table(indexes = [Index(name="usernameIndex", columnList = "username", unique=true)])
@@ -32,14 +40,6 @@ class User (
     var roles: String
 ){
 
-    enum class Rolename {
-        CUSTOMER,
-        ADMIN
-    }
-
-    private inline fun <reified T : Enum<T>> enumContains(name: String): Boolean {
-        return enumValues<T>().any { it.name == name}
-    }
 
     fun getRolenames(): Set<String>{
         val set: MutableSet<String> = mutableSetOf()

@@ -38,6 +38,29 @@ class WalletApplication{
             val u5 = User(null,"loren","passwordsicurissima","ciao@mail1.it",roles="CUSTOMER")
             val u6 = User(null,"lore","passwordsicurissima","ciao@mail2.it",roles="CUSTOMER,ADMIN")
             userRepository.saveAll(listOf(u4,u5,u6))
+            /**
+             * Debug userServiceImpl
+             **/
+            try {
+                userService.createUser(UserDetailsDTO(null, "aldoBaglio", "abc", "abc", "aldo@email.com", "CUSTOMER")) //ok
+                //userService.createUser(UserDetailsDTO(null, "aldoBaglio", "abc", "abc", "aldofake@email.com", "CUSTOMER")) //userame duplicated
+                //userService.createUser(UserDetailsDTO(null, "aldoBaglio2", "abc", "abc", "aldo2@email.com", "TEACHER")) //role not valid
+                userService.addRoleToUser("CUSTOMER","lorenz") //ok
+                //userService.addRoleToUser("cc","lorenz") //role not valid
+                //userService.addRoleToUser("CUSTOMER","notValid") //Username not valid
+                userService.removeRoleToUser("CUSTOMER","lorenz") //ok
+                //userService.removeRoleToUser("TEACHER","lorenz") //role not present
+                //userService.removeRoleToUser("CUSTOMER","lo") //role not present
+                userService.enableUser("lorenz") //ok
+                //userService.enableUser("lor") // Username not found
+                userService.disableUser("lorenz") //ok
+                //userService.disableUser("lo") //username not valid
+                println(userService.loadUserByUsername("lorenz")) //ok
+                //println(userService.loadUserByUsername("lo")) //ok
+
+            } catch(ex: Exception){
+                println(ex.message)
+            }
             /*val u = userRepository.findByUsername("loren")
             u?.addRolename("ADMIN")
             println(u?.getRolenames())
