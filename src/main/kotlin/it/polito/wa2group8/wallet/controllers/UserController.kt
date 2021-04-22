@@ -4,19 +4,15 @@ import it.polito.wa2group8.wallet.dto.SignInBody
 import it.polito.wa2group8.wallet.dto.UserDetailsDTO
 import it.polito.wa2group8.wallet.exceptions.BadRequestException
 import it.polito.wa2group8.wallet.exceptions.InvalidAuthException
-import it.polito.wa2group8.wallet.services.UserDetailsServiceImpl
-import org.hibernate.exception.ConstraintViolationException
+import it.polito.wa2group8.wallet.services.UserDetailsService
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.BindingResult
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.ResponseBody
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 
 @RestController
-class UserController(val userDetailsService: UserDetailsServiceImpl)
+class UserController(val userDetailsService: UserDetailsService)
 {
     @PostMapping(value = ["/auth/signin"], produces=[MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
@@ -54,6 +50,18 @@ class UserController(val userDetailsService: UserDetailsServiceImpl)
         // Add new user
         return try {
             ResponseEntity.status(201).body(userDetailsService.createUser(userDetails))
+        } catch (ex: BadRequestException) {
+            ResponseEntity.badRequest().body(ex.message)
+        }
+    }
+
+    @GetMapping(value=["/auth/registrationConfirm"], produces=[MediaType.APPLICATION_JSON_VALUE])
+    @ResponseBody
+    fun registrationConfirm(
+        @RequestParam token : String
+    ): ResponseEntity<Any> {
+        return try {
+            ResponseEntity.status(201).body(userDetailsService.confirmRegistration(token))
         } catch (ex: BadRequestException) {
             ResponseEntity.badRequest().body(ex.message)
         }
