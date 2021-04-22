@@ -9,10 +9,7 @@ import org.hibernate.exception.ConstraintViolationException
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.BindingResult
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.ResponseBody
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 
 @RestController
@@ -54,6 +51,18 @@ class UserController(val userDetailsService: UserDetailsServiceImpl)
         // Add new user
         return try {
             ResponseEntity.status(201).body(userDetailsService.createUser(userDetails))
+        } catch (ex: BadRequestException) {
+            ResponseEntity.badRequest().body(ex.message)
+        }
+    }
+
+    @GetMapping(value=["/auth/registrationConfirm"], produces=[MediaType.APPLICATION_JSON_VALUE])
+    @ResponseBody
+    fun registrationConfirm(
+        @RequestParam token : String
+    ): ResponseEntity<Any> {
+        return try {
+            ResponseEntity.status(201).body("")
         } catch (ex: BadRequestException) {
             ResponseEntity.badRequest().body(ex.message)
         }

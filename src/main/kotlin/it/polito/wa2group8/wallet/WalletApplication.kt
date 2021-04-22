@@ -13,6 +13,10 @@ import org.springframework.boot.runApplication
 import org.springframework.context.annotation.Bean
 import java.math.BigDecimal
 import it.polito.wa2group8.wallet.dto.UserDetailsDTO
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.mail.javamail.JavaMailSender
+import org.springframework.mail.javamail.JavaMailSenderImpl
+import org.springframework.stereotype.Component
 
 @SpringBootApplication
 class WalletApplication{
@@ -51,6 +55,35 @@ class WalletApplication{
 
         }
     }
+}
+
+@Value("\${spring.mail.host}")
+private val host: String = ""
+@Value("\${spring.mail.port}")
+private val port: Int = 0
+@Value("\${spring.mail.username}")
+private val username: String = ""
+@Value("\${spring.mail.password}")
+private val password: String = ""
+@Value("\${spring.mail.properties.mail.smtp.auth}")
+private val auth: Boolean = true
+@Value("\${spring.mail.properties.mail.smtp.starttls.enable}")
+private val starttls: Boolean = true
+@Value("\${spring.mail.properties.mail.debug}")
+private val debug: Boolean = true
+
+@Bean("JavaMailSender")
+fun getMailSender() : JavaMailSender{
+    val mailSender = JavaMailSenderImpl()
+    mailSender.host = host
+    mailSender.port = port
+    mailSender.username = username
+    mailSender.password = password
+    val properties = mailSender.javaMailProperties
+    properties["spring.mail.properties.mail.smtp.auth"] = auth
+    properties["spring.mail.properties.mail.smtp.starttls.enable"] = starttls
+    properties["spring.mail.properties.mail.debug"] = debug
+    return mailSender
 }
 
 fun main(args: Array<String>) {
