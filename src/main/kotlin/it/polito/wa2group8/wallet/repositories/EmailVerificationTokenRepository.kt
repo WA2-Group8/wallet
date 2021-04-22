@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface EmailVerificationTokenRepository: CrudRepository<EmailVerificationToken, Long> {
-    fun findEmailVerificationTokenByToken(token: String) : EmailVerificationToken
+    fun findEmailVerificationTokenByToken(token: String) : EmailVerificationToken?
 }

@@ -61,7 +61,7 @@ class UserController(val userDetailsService: UserDetailsService)
         @RequestParam token : String
     ): ResponseEntity<Any> {
         return try {
-            ResponseEntity.status(201).body("")
+            ResponseEntity.status(201).body(userDetailsService.confirmRegistration(token))
         } catch (ex: BadRequestException) {
             ResponseEntity.badRequest().body(ex.message)
         }

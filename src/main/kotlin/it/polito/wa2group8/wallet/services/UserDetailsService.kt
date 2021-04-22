@@ -11,4 +11,5 @@ interface UserDetailsService {
     fun disableUser(username: String)
     fun loadUserByUsername(username: String) : UserDetailsDTO
     fun doLogin(info: SignInBody)
+    fun confirmRegistration(token: String) : String
 }

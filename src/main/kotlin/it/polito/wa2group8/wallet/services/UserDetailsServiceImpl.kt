@@ -6,6 +6,8 @@ import it.polito.wa2group8.wallet.dto.UserDetailsDTO
 import it.polito.wa2group8.wallet.dto.toUserDetailsDTO
 import it.polito.wa2group8.wallet.exceptions.BadRequestException
 import it.polito.wa2group8.wallet.exceptions.InvalidAuthException
+import it.polito.wa2group8.wallet.exceptions.NotFoundException
+import it.polito.wa2group8.wallet.repositories.EmailVerificationTokenRepository
 import it.polito.wa2group8.wallet.repositories.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext
@@ -18,6 +20,7 @@ import java.net.InetAddress
 @Transactional
 class UserDetailsServiceImpl(
     val userRepository: UserRepository,
+    val emailVerificationTokenRepository: EmailVerificationTokenRepository,
     val mailService: MailService,
     val notificationService: NotificationService
 ): UserDetailsService {
@@ -69,4 +72,15 @@ class UserDetailsServiceImpl(
             throw InvalidAuthException("Incorrect username and/or password")
         //If I'm here, username and password are both valid.
     }
+
+    override fun confirmRegistration(token: String): String {
+        val userToken = emailVerificationTokenRepository.findEmailVerificationTokenByToken(token)
+            ?: throw NotFoundException("Token not valid.")
+        val user = userRepository.findByUsername(userToken.user.username)
+            ?: throw NotFoundException("User not found.")
+        user.isEnabled = true
+        userRepository.save(user)
+        return "Your registration is completed successfully."
+    }
+
 }
