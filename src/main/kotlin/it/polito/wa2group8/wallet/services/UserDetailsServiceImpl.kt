@@ -38,15 +38,13 @@ class UserDetailsServiceImpl(
         val roles = userDetails.roles?.split(',') ?: throw BadRequestException("Roles not valid")
         roles.forEach{if(!enumContains<Rolename>(it)) throw throw BadRequestException("Roles not valid")}
 
-        //val user = User(null, userDetails.username, userDetails.password!!, userDetails.email, roles=userDetails.roles!!)
-        //return userRepository.save(user).toUserDetailsDTO()
         // Save user in the DB
         val user = userRepository.save(User(null, userDetails.username, userDetails.password!!, userDetails.email, roles="CUSTOMER"))
         // Create email message
         val token = notificationService.createEmailVerificationToken(user)
-        val hostname = InetAddress.getLocalHost().hostAddress
+        val addr = InetAddress.getLocalHost().hostAddress
         val port = webServerAppContext?.webServer?.port
-        val text = "http://$hostname:$port/auth/registrationConfirm?token=$token"
+        val text = "http://$addr:$port/auth/registrationConfirm?token=$token"
         // Send email
         mailService.sendMessage(user.email, "Confirm your registration", text)
         return user.toUserDetailsDTO()
