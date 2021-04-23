@@ -1,12 +1,12 @@
 package it.polito.wa2group8.wallet.services
 
-import it.polito.wa2group8.wallet.domain.Rolename
+import it.polito.wa2group8.wallet.domain.User.Rolename
 import it.polito.wa2group8.wallet.domain.User
-import it.polito.wa2group8.wallet.domain.enumContains
 import it.polito.wa2group8.wallet.dto.SignInBody
 import it.polito.wa2group8.wallet.dto.UserDetailsDTO
 import it.polito.wa2group8.wallet.dto.toUserDetailsDTO
 import it.polito.wa2group8.wallet.exceptions.BadRequestException
+import it.polito.wa2group8.wallet.exceptions.ExpiredTokenException
 import it.polito.wa2group8.wallet.exceptions.InvalidAuthException
 import it.polito.wa2group8.wallet.exceptions.NotFoundException
 import it.polito.wa2group8.wallet.repositories.EmailVerificationTokenRepository
@@ -16,6 +16,7 @@ import org.springframework.boot.web.servlet.context.ServletWebServerApplicationC
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.net.InetAddress
+import java.sql.Timestamp
 
 
 @Service
@@ -34,10 +35,6 @@ class UserDetailsServiceImpl(
         // Check if username is already in the DB
         if(userRepository.findByUsername(userDetails.username) != null)
             throw BadRequestException("Username already exist")
-
-        val roles = userDetails.roles?.split(',') ?: throw BadRequestException("Roles not valid")
-        roles.forEach{if(!enumContains<Rolename>(it)) throw throw BadRequestException("Roles not valid")}
-
         // Save user in the DB
         val user = userRepository.save(User(null, userDetails.username, userDetails.password!!, userDetails.email, roles="CUSTOMER"))
         // Create email message
@@ -87,8 +84,10 @@ class UserDetailsServiceImpl(
     override fun confirmRegistration(token: String): String {
         val userToken = emailVerificationTokenRepository.findEmailVerificationTokenByToken(token)
             ?: throw NotFoundException("Token not valid.")
-        val user = userRepository.findByUsername(userToken.user.username)
+        if(userToken.expiryDate < Timestamp(System.currentTimeMillis())) throw ExpiredTokenException("The token is expired.")
+        val user = userRepository.findByUsername(userToken.username)
             ?: throw NotFoundException("User not found.")
+        if(user.isEnabled) return "User is already registered."
         user.isEnabled = true
         userRepository.save(user)
         return "Your registration is completed successfully."

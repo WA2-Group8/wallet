@@ -16,18 +16,18 @@ import it.polito.wa2group8.wallet.dto.UserDetailsDTO
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.mail.javamail.JavaMailSenderImpl
-import org.springframework.security.crypto.factory.PasswordEncoderFactories
-import org.springframework.security.crypto.password.PasswordEncoder
+//import org.springframework.security.crypto.factory.PasswordEncoderFactories
+//import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Component
 
 @SpringBootApplication
 class WalletApplication
 {
-    @Bean
+    /*@Bean
     fun passwordEncoder(): PasswordEncoder
     {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder()
-    }
+    }*/
 //    @Bean
 //    fun test(walletRepository : WalletRepository,customerRepository : CustomerRepository, userRepository: UserRepository,userService: UserDetailsService) : CommandLineRunner{
 //       return CommandLineRunner{

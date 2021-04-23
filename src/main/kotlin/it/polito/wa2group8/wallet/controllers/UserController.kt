@@ -3,7 +3,9 @@ package it.polito.wa2group8.wallet.controllers
 import it.polito.wa2group8.wallet.dto.SignInBody
 import it.polito.wa2group8.wallet.dto.UserDetailsDTO
 import it.polito.wa2group8.wallet.exceptions.BadRequestException
+import it.polito.wa2group8.wallet.exceptions.ExpiredTokenException
 import it.polito.wa2group8.wallet.exceptions.InvalidAuthException
+import it.polito.wa2group8.wallet.exceptions.NotFoundException
 import it.polito.wa2group8.wallet.services.UserDetailsService
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -62,8 +64,10 @@ class UserController(val userDetailsService: UserDetailsService)
     ): ResponseEntity<Any> {
         return try {
             ResponseEntity.status(201).body(userDetailsService.confirmRegistration(token))
-        } catch (ex: BadRequestException) {
-            ResponseEntity.badRequest().body(ex.message)
+        } catch (ex: NotFoundException) {
+            ResponseEntity.status(404).body(ex.message)
+        } catch (ex: ExpiredTokenException) {
+            ResponseEntity.status(408).body(ex.message)
         }
     }
 }
