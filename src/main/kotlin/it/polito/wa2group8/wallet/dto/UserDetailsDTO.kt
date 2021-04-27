@@ -1,6 +1,7 @@
 package it.polito.wa2group8.wallet.dto
 
 import it.polito.wa2group8.wallet.domain.User
+import org.springframework.security.core.userdetails.UserDetails
 import javax.validation.constraints.Email
 import javax.validation.constraints.NotEmpty
 import javax.validation.constraints.Size

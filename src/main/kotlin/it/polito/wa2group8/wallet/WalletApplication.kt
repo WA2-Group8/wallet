@@ -55,10 +55,7 @@ fun getMailSender() : JavaMailSender {
     return mailSender
 }
 
-@Bean
-fun passwordEncoder() : PasswordEncoder {
-    return PasswordEncoderFactories.createDelegatingPasswordEncoder()
-}
+
 
 fun main(args: Array<String>) {
     runApplication<WalletApplication>(*args)

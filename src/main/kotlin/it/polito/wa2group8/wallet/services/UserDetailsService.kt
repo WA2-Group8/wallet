@@ -2,8 +2,9 @@ package it.polito.wa2group8.wallet.services
 
 import it.polito.wa2group8.wallet.dto.SignInBody
 import it.polito.wa2group8.wallet.dto.UserDetailsDTO
+import org.springframework.security.core.userdetails.UserDetailsService
 
-interface UserDetailsService {
+interface UserDetailsService{
     fun createUser(userDetails: UserDetailsDTO): UserDetailsDTO?
     fun addRoleToUser(role: String, username: String)
     fun removeRoleToUser(role: String, username: String)
