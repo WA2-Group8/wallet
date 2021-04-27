@@ -33,7 +33,7 @@ class WalletServiceImpl(
         val customer = customerRepo.findByIdOrNull(customerId) ?: throw NotFoundException("Customer not found")
 
         // Create Wallet entity
-        val wallet = Wallet(null, customer, BigDecimal(0))
+        val wallet = Wallet(customer, BigDecimal(0))
 
         // Save wallet
         return walletRepo.save(wallet).toWalletDTO()
@@ -52,7 +52,7 @@ class WalletServiceImpl(
         val beneficiaryWallet = walletRepo.findByIdOrNull(transactionDTO.beneficiaryWalletID ?: -1) ?: throw NotFoundException("Beneficiary wallet not found")
 
         // Create Transaction entity
-        val transaction = Transaction(null, transactionDTO.amount!!, LocalDateTime.now(), payerWallet, beneficiaryWallet)
+        val transaction = Transaction(transactionDTO.amount!!, LocalDateTime.now(), payerWallet, beneficiaryWallet)
 
         // Check if currentAmount is sufficient
         if(payerWallet.currentAmount < transaction.amount)

@@ -10,10 +10,6 @@ import javax.validation.constraints.NotEmpty
 @Entity
 @Table(indexes = [Index(name="usernameIndex", columnList = "username", unique=true)])
 class User (
-    @Id
-    @GeneratedValue
-    var userId: Long?,
-
     @Column(name="username", unique=true)
     @get:NotEmpty(message="Username must be not empty")
     @Valid
@@ -31,7 +27,8 @@ class User (
     var isEnabled: Boolean = false,
 
     var roles: String
-){
+): EntityBase<Long>()
+{
     enum class Rolename {
         CUSTOMER,
         ADMIN
@@ -60,5 +57,4 @@ class User (
         roles = rolesSet.filter { it!=role }.joinToString(",")
 
     }
-
 }

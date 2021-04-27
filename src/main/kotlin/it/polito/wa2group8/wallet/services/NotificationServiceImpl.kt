@@ -20,7 +20,7 @@ class NotificationServiceImpl(
     override fun createEmailVerificationToken(user: User) : String{
         val token = UUID.randomUUID().toString()
         val timestamp = Timestamp(System.currentTimeMillis()+5*60*1000)
-        val emailVerificationToken = EmailVerificationToken(null, timestamp, token, user.username)
+        val emailVerificationToken = EmailVerificationToken( timestamp, token, user.username)
         emailVerificationTokenRepository.save(emailVerificationToken)
         return token
     }

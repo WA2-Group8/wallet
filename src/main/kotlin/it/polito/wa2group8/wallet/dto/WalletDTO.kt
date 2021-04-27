@@ -9,4 +9,4 @@ data class WalletDTO(val customerId : Long?,
 )
 
 
-fun Wallet.toWalletDTO() = WalletDTO(customer.customerID, currentAmount)
+fun Wallet.toWalletDTO() = WalletDTO(customer.getId(), currentAmount)

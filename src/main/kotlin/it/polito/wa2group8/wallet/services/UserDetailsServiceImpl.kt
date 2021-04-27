@@ -36,7 +36,7 @@ class UserDetailsServiceImpl(
         if(userRepository.findByUsername(userDetails.username) != null)
             throw BadRequestException("Username already exist")
         // Save user in the DB
-        val user = userRepository.save(User(null, userDetails.username, userDetails.password!!, userDetails.email, roles="CUSTOMER"))
+        val user = userRepository.save(User(userDetails.username, userDetails.password!!, userDetails.email, roles="CUSTOMER"))
         // Create email message
         val token = notificationService.createEmailVerificationToken(user)
         val addr = InetAddress.getLocalHost().hostAddress

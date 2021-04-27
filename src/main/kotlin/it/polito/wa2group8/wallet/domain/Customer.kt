@@ -5,9 +5,6 @@ import javax.persistence.*
 
 @Entity
 class Customer(
-    @Id
-    @GeneratedValue
-    var customerID: Long?,
     @Column(nullable = false)
     var name: String,
     @Column(nullable = false)
@@ -17,9 +14,10 @@ class Customer(
     @Column(nullable = false)
     var deliveryAddress: String,
     @OneToOne(cascade = [CascadeType.ALL])
-    @JoinColumn(name="userId",referencedColumnName = "userId")
+    @JoinColumn(name="id",referencedColumnName = "id")
     var user: User
-){
-    @OneToMany(mappedBy = "walletId", targetEntity = Wallet::class, fetch = FetchType.LAZY)
+): EntityBase<Long>()
+{
+    @OneToMany(mappedBy = "id", targetEntity = Wallet::class, fetch = FetchType.LAZY)
     var walletList: MutableSet<Wallet> = mutableSetOf()
 }

@@ -18,4 +18,4 @@ data class UserDetailsDTO(
     @get:NotEmpty @get:Email val email: String,
     val roles: String?)
 
-fun User.toUserDetailsDTO() = UserDetailsDTO(userId, username,null,null, email, roles)
+fun User.toUserDetailsDTO() = UserDetailsDTO(this.getId(), username,null,null, email, roles)
