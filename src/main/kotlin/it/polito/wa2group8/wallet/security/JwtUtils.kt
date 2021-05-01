@@ -5,10 +5,14 @@ import it.polito.wa2group8.wallet.dto.UserDetailsDTO
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.core.Authentication
 import it.polito.wa2group8.wallet.services.UserDetailsService
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
+import org.springframework.stereotype.Component
 import java.util.*
 import javax.crypto.SecretKey
 import javax.crypto.spec.SecretKeySpec
 
+@Configuration
 class JwtUtils (val userDetailsService: UserDetailsService){
 
     @Value("\${application.jwt.jwtSecret}")
@@ -17,11 +21,6 @@ class JwtUtils (val userDetailsService: UserDetailsService){
     @Value("\${application.jwt.jwtExpirationMs}")
     private val jwtExpirationMs : Int = 0
 
-    @Value("\${application.jwt.jwtHeader}")
-    private val jwtHeader : String = ""
-
-    @Value("\${application.jwt.jwtHeaderStart}")
-    private val jwtHeaderStart : String = ""
 
     fun generateJwtToken (authentication: Authentication): String {
         val decodedKey: ByteArray = Base64.getDecoder().decode(jwtSecret)
