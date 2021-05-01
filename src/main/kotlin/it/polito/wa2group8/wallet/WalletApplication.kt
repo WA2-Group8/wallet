@@ -9,11 +9,13 @@ import org.springframework.boot.runApplication
 import org.springframework.context.annotation.Bean
 import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.mail.javamail.JavaMailSenderImpl
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity
 import org.springframework.security.crypto.factory.PasswordEncoderFactories
 import org.springframework.security.crypto.password.PasswordEncoder
 
 
 @SpringBootApplication
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 class WalletApplication{
     @Bean
     fun test(walletRepository : WalletRepository,customerRepository : CustomerRepository) : CommandLineRunner{

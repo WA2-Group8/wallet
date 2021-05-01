@@ -38,11 +38,20 @@ class WebSecurityConfig(val jwtUtils: JwtUtils): WebSecurityConfigurerAdapter() 
     override fun configure(http: HttpSecurity) {
         //csrf is enable by default
         http.cors()
-            .and()
+        http.authorizeRequests()
+            .antMatchers("/auth/**")
+            .permitAll()
+        .and()
             .authorizeRequests()
-            .antMatchers("/").permitAll()
-            .antMatchers("/wallet/**").hasAnyRole()
-            //.regexMatchers("?! /auth/.*"
+            .antMatchers("/**")
+            .hasRole("ADMIN")
+        .and()
+            .formLogin()
+            .loginPage("/auth/signin")
+            .permitAll()
+        .and()
+            .logout()
+            .permitAll()
 
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         http.exceptionHandling().authenticationEntryPoint(authEntryPoint)
@@ -81,6 +90,7 @@ class WebSecurityConfig(val jwtUtils: JwtUtils): WebSecurityConfigurerAdapter() 
             val header = request.getHeader("Authorization")
 
             //Verify that "Authorization" header is present
+            //This check is very important to allow access to entry points marked as "permitAll"
             if (header == null || !header.startsWith("Bearer"))
             {
                 filterChain.doFilter(request, response)
