@@ -44,13 +44,15 @@ class User (
         return set
     }
 
-    fun addRolename(role: String){
+    fun addRolename(role: String)
+    {
         if(!enumContains<Rolename>(role)) throw RuntimeException("Rolename not found")
         if(roles.split(',').contains(role)) throw RuntimeException("Rolename already exist")
         roles=if(roles.isEmpty()) role else "$roles,$role"
     }
 
-    fun removeRolename(role: String){
+    fun removeRolename(role: String)
+    {
         if(!enumContains<Rolename>(role)) throw RuntimeException("Rolename not found")
         val rolesSet = getRolenames()
         if (!rolesSet.contains(role)) throw RuntimeException("Role not present")

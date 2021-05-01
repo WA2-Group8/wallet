@@ -1,5 +1,6 @@
 package it.polito.wa2group8.wallet.services
 
+import it.polito.wa2group8.wallet.domain.Customer
 import it.polito.wa2group8.wallet.domain.User
 import it.polito.wa2group8.wallet.dto.RegistrationRequestDTO
 import it.polito.wa2group8.wallet.dto.SignInBody
@@ -9,6 +10,7 @@ import it.polito.wa2group8.wallet.exceptions.BadRequestException
 import it.polito.wa2group8.wallet.exceptions.ExpiredTokenException
 import it.polito.wa2group8.wallet.exceptions.InvalidAuthException
 import it.polito.wa2group8.wallet.exceptions.NotFoundException
+import it.polito.wa2group8.wallet.repositories.CustomerRepository
 import it.polito.wa2group8.wallet.repositories.EmailVerificationTokenRepository
 import it.polito.wa2group8.wallet.repositories.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
@@ -23,6 +25,7 @@ import java.sql.Timestamp
 @Transactional
 class UserDetailsServiceImpl(
     val userRepository: UserRepository,
+    val customerRepository: CustomerRepository,
     val emailVerificationTokenRepository: EmailVerificationTokenRepository,
     val mailService: MailService,
     val notificationService: NotificationService
@@ -37,6 +40,9 @@ class UserDetailsServiceImpl(
             throw BadRequestException("Username already exist")
         // Save user in the DB
         val user = userRepository.save(User(registrationRequest.username, registrationRequest.password, registrationRequest.email, roles="CUSTOMER"))
+        val customer = Customer(null, null, null, user)
+        customerRepository.save(customer)
+
         // Create email message
         val token = notificationService.createEmailVerificationToken(user)
         val addr = InetAddress.getLocalHost().hostAddress
@@ -49,12 +55,31 @@ class UserDetailsServiceImpl(
 
     override fun addRoleToUser(role: String, username: String) {
         val user = userRepository.findByUsername(username) ?: throw BadRequestException("Username does not exist")
-        user.addRolename(role)
+        try {
+            user.addRolename(role)
+            if (user.getRolenames().contains("CUSTOMER"))
+            {
+                val customer = Customer(null, null, null, user)
+                customerRepository.save(customer)
+            }
+        }
+        catch (ex: Exception) {
+            throw ex
+        }
     }
 
     override fun removeRoleToUser(role: String, username: String) {
         val user = userRepository.findByUsername(username) ?: throw BadRequestException("Username does not exist")
-        user.removeRolename(role)
+        try {
+            user.removeRolename(role)
+            if (role == "CUSTOMER")
+            {
+                customerRepository.deleteCustomerByUser(user)
+            }
+        }
+        catch (ex: Exception) {
+            throw ex
+        }
     }
 
     override fun enableUser(username: String) {

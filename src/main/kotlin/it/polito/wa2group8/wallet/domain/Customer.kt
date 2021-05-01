@@ -1,18 +1,15 @@
 package it.polito.wa2group8.wallet.domain
 
-
 import javax.persistence.*
 
 @Entity
 class Customer(
-    @Column(nullable = false)
-    var name: String,
-    @Column(nullable = false)
-    var surname: String,
-    @Column(nullable = false, unique = true)
-    var email: String,
-    @Column(nullable = false)
-    var deliveryAddress: String,
+    @Column(nullable = true)
+    var name: String?,
+    @Column(nullable = true)
+    var surname: String?,
+    @Column(nullable = true)
+    var deliveryAddress: String?,
     @OneToOne(cascade = [CascadeType.ALL])
     @JoinColumn(name="id",referencedColumnName = "id")
     var user: User
