@@ -1,7 +1,7 @@
 package it.polito.wa2group8.wallet.controllers
 
+import it.polito.wa2group8.wallet.dto.RegistrationRequestDTO
 import it.polito.wa2group8.wallet.dto.SignInBody
-import it.polito.wa2group8.wallet.dto.UserDetailsDTO
 import it.polito.wa2group8.wallet.exceptions.BadRequestException
 import it.polito.wa2group8.wallet.exceptions.ExpiredTokenException
 import it.polito.wa2group8.wallet.exceptions.InvalidAuthException
@@ -39,19 +39,19 @@ class UserController(val userDetailsService: UserDetailsService)
     @PostMapping(value=["/auth/register"], produces=[MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     fun register(
-        @RequestBody @Valid userDetails: UserDetailsDTO,
+        @RequestBody @Valid registrationRequest: RegistrationRequestDTO,
         bindingResult: BindingResult
     ): ResponseEntity<Any> {
         // Check validation results
-        if(bindingResult.hasErrors())
+        if (bindingResult.hasErrors())
             return ResponseEntity.badRequest().body(
                 bindingResult.fieldErrors.map { f -> f.field + " " + f.defaultMessage })
         // Check password
-        if(userDetails.password != userDetails.confirmPassword)
+        if (registrationRequest.password != registrationRequest.confirmPassword)
             return ResponseEntity.badRequest().body("Password and confirmPassword do not match")
         // Add new user
         return try {
-            ResponseEntity.status(201).body(userDetailsService.createUser(userDetails))
+            ResponseEntity.status(201).body(userDetailsService.createUser(registrationRequest))
         } catch (ex: BadRequestException) {
             ResponseEntity.badRequest().body(ex.message)
         }

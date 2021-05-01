@@ -1,7 +1,7 @@
 package it.polito.wa2group8.wallet.services
 
-import it.polito.wa2group8.wallet.domain.User.Rolename
 import it.polito.wa2group8.wallet.domain.User
+import it.polito.wa2group8.wallet.dto.RegistrationRequestDTO
 import it.polito.wa2group8.wallet.dto.SignInBody
 import it.polito.wa2group8.wallet.dto.UserDetailsDTO
 import it.polito.wa2group8.wallet.dto.toUserDetailsDTO
@@ -31,12 +31,12 @@ class UserDetailsServiceImpl(
     @Autowired
     private val webServerAppContext: ServletWebServerApplicationContext? = null
 
-    override fun createUser(userDetails: UserDetailsDTO): UserDetailsDTO? {
+    override fun createUser(registrationRequest: RegistrationRequestDTO): UserDetailsDTO? {
         // Check if username is already in the DB
-        if(userRepository.findByUsername(userDetails.username) != null)
+        if (userRepository.findByUsername(registrationRequest.username) != null)
             throw BadRequestException("Username already exist")
         // Save user in the DB
-        val user = userRepository.save(User(userDetails.username, userDetails.password!!, userDetails.email, roles="CUSTOMER"))
+        val user = userRepository.save(User(registrationRequest.username, registrationRequest.password, registrationRequest.email, roles="CUSTOMER"))
         // Create email message
         val token = notificationService.createEmailVerificationToken(user)
         val addr = InetAddress.getLocalHost().hostAddress
