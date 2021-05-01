@@ -8,6 +8,7 @@ import it.polito.wa2group8.wallet.exceptions.NotFoundException
 import it.polito.wa2group8.wallet.services.WalletService
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
@@ -86,6 +87,8 @@ class WalletController(val walletService: WalletService)
         @PathVariable("transactionId") transactionId: Long
     ): ResponseEntity<Any>
     {
+        val test = SecurityContextHolder.getContext().authentication.principal
+
         return try{
             ResponseEntity.ok().body(walletService.getTransactionById(walletId, transactionId))
         } catch(ex: ForbiddenException){

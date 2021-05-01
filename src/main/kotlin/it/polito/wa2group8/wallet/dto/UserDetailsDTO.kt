@@ -19,18 +19,18 @@ data class SignInBody(
 
 class UserDetailsDTO(
     private val username: String,
-    private val password: String,
-    private val email: String,
-    private val isEnabled: Boolean,
+    private val password: String?,
+    private val email: String?,
+    private val isEnabled: Boolean?,
     //TODO("gli altri boolen vanno aggiunti?")
     private val roles: Set<String>,
 ): UserDetails
 {
-    override fun getPassword(): String = password
+    override fun getPassword(): String = password ?: ""
 
     override fun getUsername(): String = username
 
-    override fun isEnabled(): Boolean = isEnabled
+    override fun isEnabled(): Boolean = isEnabled ?: false
 
     override fun getAuthorities(): MutableCollection<out GrantedAuthority>
     {
@@ -40,7 +40,7 @@ class UserDetailsDTO(
         return authorities
     }
 
-    fun getEmail(): String = email
+    fun getEmail(): String = email ?: ""
 
     //NON ABBIAMO QUESTE INFORMAZIONI NEL DB!!!!
     override fun isAccountNonExpired(): Boolean

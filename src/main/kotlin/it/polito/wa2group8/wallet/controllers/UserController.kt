@@ -85,6 +85,7 @@ class UserController(val userDetailsService: UserDetailsService)
     ): ResponseEntity<Any>
     {
         val userDetail = SecurityContextHolder.getContext().authentication.principal
+        println(SecurityContextHolder.getContext().authentication)
         if (userDetail == "ADMIN")
         {
             //Only admins can enable an user manually
