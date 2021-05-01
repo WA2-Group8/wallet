@@ -40,9 +40,9 @@ class WebSecurityConfig(val jwtUtils: JwtUtils): WebSecurityConfigurerAdapter() 
         http.cors()
             .and()
             .authorizeRequests()
-            .antMatchers("/wallet/**")
-            //.regexMatchers("?! /auth/.*")
-            .hasAnyRole()
+            .antMatchers("/").permitAll()
+            .antMatchers("/wallet/**").hasAnyRole()
+            //.regexMatchers("?! /auth/.*"
 
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         http.exceptionHandling().authenticationEntryPoint(authEntryPoint)
@@ -77,19 +77,33 @@ class WebSecurityConfig(val jwtUtils: JwtUtils): WebSecurityConfigurerAdapter() 
             response: HttpServletResponse,
             filterChain: FilterChain
         ) {
+            //Get "Authorization" header
             val header = request.getHeader("Authorization")
+
+            //Verify that "Authorization" header is present
+            if (header == null || !header.startsWith("Bearer"))
+            {
+                filterChain.doFilter(request, response)
+                return
+            }
+
+            //Retrieve the JWT from the "Authorization" header
             val token = header.replace("Bearer ", "")
 
             val userDetails = if(jwtUtils.validateJwtToken(token))
                 jwtUtils.getDetailsFromJwtToken(token) else throw RuntimeException()
 
+            //Create an UsernamePasswordAuthenticationToken
             val authentication = UsernamePasswordAuthenticationToken(
                 userDetails,
-                null,
-                //userDetails.authorities
+                null, //Password must be always null here
+                userDetails.authorities //Granted authorities (i.e. the description of the details of the authentication of a Principal)
             )
+            //Add extra details coming from the request
             authentication.details = WebAuthenticationDetailsSource()
                                         .buildDetails(request)
+
+            //Set the authentication Object in the security context
             SecurityContextHolder.getContext().authentication = authentication
         }
     }
