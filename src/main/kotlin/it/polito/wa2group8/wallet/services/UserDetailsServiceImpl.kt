@@ -15,6 +15,8 @@ import it.polito.wa2group8.wallet.repositories.EmailVerificationTokenRepository
 import it.polito.wa2group8.wallet.repositories.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.net.InetAddress
@@ -29,17 +31,21 @@ class UserDetailsServiceImpl(
     val emailVerificationTokenRepository: EmailVerificationTokenRepository,
     val mailService: MailService,
     val notificationService: NotificationService
+
 ): UserDetailsService {
 
     @Autowired
     private val webServerAppContext: ServletWebServerApplicationContext? = null
+
+
+    val encoder = BCryptPasswordEncoder()
 
     override fun createUser(registrationRequest: RegistrationRequestDTO): UserDetailsDTO? {
         // Check if username is already in the DB
         if (userRepository.findByUsername(registrationRequest.username) != null)
             throw BadRequestException("Username already exist")
         // Save user in the DB
-        val user = userRepository.save(User(registrationRequest.username, registrationRequest.password, registrationRequest.email, roles="CUSTOMER"))
+        val user = userRepository.save(User(registrationRequest.username, encoder.encode(registrationRequest.password), registrationRequest.email, roles="CUSTOMER"))
         val customer = Customer(null, null, null, user)
         customerRepository.save(customer)
 

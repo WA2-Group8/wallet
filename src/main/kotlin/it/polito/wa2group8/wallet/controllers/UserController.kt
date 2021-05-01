@@ -6,18 +6,26 @@ import it.polito.wa2group8.wallet.exceptions.BadRequestException
 import it.polito.wa2group8.wallet.exceptions.ExpiredTokenException
 import it.polito.wa2group8.wallet.exceptions.InvalidAuthException
 import it.polito.wa2group8.wallet.exceptions.NotFoundException
+import it.polito.wa2group8.wallet.security.JwtUtils
 import it.polito.wa2group8.wallet.services.UserDetailsService
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
+import org.springframework.security.authentication.AuthenticationManager
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.*
 import java.security.Principal
 import javax.validation.Valid
 
 @RestController
-class UserController(val userDetailsService: UserDetailsService)
+class UserController(val userDetailsService: UserDetailsService, val authenticationManager: AuthenticationManager, val jwtUtils: JwtUtils)
 {
+
+
+
     @GetMapping("/")
     fun root(principal: Principal?) = "Hello, ${principal?.name ?: "guest"}"
 
@@ -32,8 +40,15 @@ class UserController(val userDetailsService: UserDetailsService)
             return  ResponseEntity.status(401).body("Incorrect username and/or password")
         return try
         {
-            userDetailsService.doLogin(userInfo)
-            ResponseEntity.ok().body("ok")
+            val authentication = authenticationManager.authenticate(UsernamePasswordAuthenticationToken(userInfo.username,userInfo.password))
+            SecurityContextHolder.getContext().authentication = authentication
+            println("TUTTO OK")
+            val jwt = jwtUtils.generateJwtToken(authentication)
+            val userDetails = authentication.principal
+            return ResponseEntity.ok().header("jwt",jwt).body(userDetails)
+
+            //userDetailsService.doLogin(userInfo)
+            //ResponseEntity.ok().body("ok")
         }
         catch (ex: InvalidAuthException)
         {

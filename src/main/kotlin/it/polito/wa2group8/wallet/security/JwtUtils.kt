@@ -1,6 +1,7 @@
 package it.polito.wa2group8.wallet.security
 
 import io.jsonwebtoken.Jwts
+import io.jsonwebtoken.SignatureAlgorithm
 import it.polito.wa2group8.wallet.dto.UserDetailsDTO
 import it.polito.wa2group8.wallet.repositories.UserRepository
 import org.springframework.beans.factory.annotation.Value
@@ -26,14 +27,15 @@ class JwtUtils (val userDetailsService: UserDetailsService, val userRepository: 
 
 
     fun generateJwtToken (authentication: Authentication): String {
-        val decodedKey: ByteArray = Base64.getDecoder().decode(jwtSecret)
-        val originalKey: SecretKey = SecretKeySpec(decodedKey, 0, decodedKey.size, "ES256")
+        //val decodedKey: ByteArray = Base64.getDecoder().decode(jwtSecret)
+
+        //val originalKey: SecretKey = SecretKeySpec(decodedKey, 0, decodedKey.size, HS256)
 
         return Jwts.builder()
             .setIssuer(authentication.principal.toString())
             .setExpiration(Date(System.currentTimeMillis() + jwtExpirationMs))
             //.signWith(SignatureAlgorithm.ES256, jwtSecret)
-            .signWith(originalKey)
+            .signWith(SignatureAlgorithm.HS256,jwtSecret)
             .compact()
     }
 

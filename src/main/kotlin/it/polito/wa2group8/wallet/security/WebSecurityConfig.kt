@@ -4,6 +4,7 @@ import it.polito.wa2group8.wallet.services.UserDetailsService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
@@ -12,6 +13,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.core.AuthenticationException
 import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.factory.PasswordEncoderFactories
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.AuthenticationEntryPoint
@@ -23,12 +25,18 @@ import javax.servlet.FilterChain
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
+
 @Configuration
 @EnableWebSecurity
 class WebSecurityConfig(val jwtUtils: JwtUtils, val userDetailsService: UserDetailsService): WebSecurityConfigurerAdapter() {
 
     @Autowired
     val authEntryPoint = CustomAuthenticationEntryPoint()
+
+    @Bean
+    override fun authenticationManagerBean(): AuthenticationManager? {
+        return super.authenticationManagerBean()
+    }
 
     override fun configure(auth: AuthenticationManagerBuilder) {
         auth
@@ -46,13 +54,14 @@ class WebSecurityConfig(val jwtUtils: JwtUtils, val userDetailsService: UserDeta
             .authorizeRequests()
             .antMatchers("/auth/**")
             .permitAll()
+            .anyRequest().authenticated()
         //.and()
         //    .authorizeRequests()
         //    .antMatchers("/**")
         //    .hasRole("ADMIN")
-        .and()
-            .formLogin()
-            .permitAll()
+        //.and()
+        //    .formLogin()
+        //    .permitAll()
         .and()
             .logout()
             .permitAll()
@@ -65,13 +74,14 @@ class WebSecurityConfig(val jwtUtils: JwtUtils, val userDetailsService: UserDeta
 
     @Bean
     fun passwordEncoder() : PasswordEncoder {
-        return PasswordEncoderFactories.createDelegatingPasswordEncoder()
+        //return PasswordEncoderFactories.createDelegatingPasswordEncoder()
+        return BCryptPasswordEncoder()
     }
 
     @Component
     class CustomAuthenticationEntryPoint: AuthenticationEntryPoint {
         override fun commence(request: HttpServletRequest, response: HttpServletResponse, authException: AuthenticationException) {
-            response.status = HttpServletResponse.SC_UNAUTHORIZED
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Error: Unauthorized")
         }
 
     }
