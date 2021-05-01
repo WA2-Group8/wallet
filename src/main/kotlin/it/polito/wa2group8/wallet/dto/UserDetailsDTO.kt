@@ -45,17 +45,17 @@ class UserDetailsDTO(
     //NON ABBIAMO QUESTE INFORMAZIONI NEL DB!!!!
     override fun isAccountNonExpired(): Boolean
     {
-        TODO("Not yet implemented")
+        return true
     }
 
     override fun isAccountNonLocked(): Boolean
     {
-        TODO("Not yet implemented")
+        return true
     }
 
     override fun isCredentialsNonExpired(): Boolean
     {
-        TODO("Not yet implemented")
+        return true
     }
 }
 

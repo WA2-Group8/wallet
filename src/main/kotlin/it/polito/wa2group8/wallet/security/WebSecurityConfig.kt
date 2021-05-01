@@ -1,5 +1,6 @@
 package it.polito.wa2group8.wallet.security
 
+import it.polito.wa2group8.wallet.services.UserDetailsService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -24,37 +25,40 @@ import javax.servlet.http.HttpServletResponse
 
 @Configuration
 @EnableWebSecurity
-class WebSecurityConfig(val jwtUtils: JwtUtils): WebSecurityConfigurerAdapter() {
+class WebSecurityConfig(val jwtUtils: JwtUtils, val userDetailsService: UserDetailsService): WebSecurityConfigurerAdapter() {
 
     @Autowired
     val authEntryPoint = CustomAuthenticationEntryPoint()
 
     override fun configure(auth: AuthenticationManagerBuilder) {
         auth
-            .userDetailsService(userDetailsService())
+            .userDetailsService(userDetailsService)
             .passwordEncoder(passwordEncoder())
 
     }
     override fun configure(http: HttpSecurity) {
         //csrf is enable by default
-        http.cors()
-        http.authorizeRequests()
-            .antMatchers("/auth/**")
-            .permitAll()
+        http.cors().and().csrf().disable()
+            .exceptionHandling().authenticationEntryPoint(authEntryPoint)
+        .and()
+            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         .and()
             .authorizeRequests()
-            .antMatchers("/**")
-            .hasRole("ADMIN")
+            .antMatchers("/auth/**")
+            .permitAll()
+        //.and()
+        //    .authorizeRequests()
+        //    .antMatchers("/**")
+        //    .hasRole("ADMIN")
         .and()
             .formLogin()
-            .loginPage("/auth/signin")
             .permitAll()
         .and()
             .logout()
             .permitAll()
 
-        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-        http.exceptionHandling().authenticationEntryPoint(authEntryPoint)
+        //http.sessionManagement().disable()//sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+        //http.exceptionHandling().authenticationEntryPoint(authEntryPoint)
         http.addFilterBefore(JwtAuthenticationTokenFilter(jwtUtils),
             UsernamePasswordAuthenticationFilter::class.java)
     }

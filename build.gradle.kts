@@ -33,6 +33,7 @@ dependencies {
     runtimeOnly("org.mariadb.jdbc:mariadb-java-client")
     implementation("org.hibernate.validator:hibernate-validator")
     implementation("javax.validation:validation-api")
+    implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
     // Security dependencies
     implementation("io.jsonwebtoken:jjwt-api:0.11.2")
     runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.2")

@@ -5,13 +5,13 @@ import it.polito.wa2group8.wallet.dto.SignInBody
 import it.polito.wa2group8.wallet.dto.UserDetailsDTO
 import org.springframework.security.core.userdetails.UserDetailsService
 
-interface UserDetailsService{
+interface UserDetailsService: UserDetailsService{
     fun createUser(registrationRequest: RegistrationRequestDTO): UserDetailsDTO?
     fun addRoleToUser(role: String, username: String)
     fun removeRoleToUser(role: String, username: String)
     fun enableUser(username: String)
     fun disableUser(username: String)
-    fun loadUserByUsername(username: String) : UserDetailsDTO
+    override fun loadUserByUsername(username: String) : UserDetailsDTO
     fun doLogin(info: SignInBody)
     fun confirmRegistration(token: String) : String
 }
