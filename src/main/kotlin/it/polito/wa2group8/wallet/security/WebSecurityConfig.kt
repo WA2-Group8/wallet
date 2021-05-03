@@ -54,11 +54,11 @@ class WebSecurityConfig(val jwtUtils: JwtUtils, val userDetailsService: UserDeta
             .authorizeRequests()
             .antMatchers("/auth/**")
             .permitAll()
-            .anyRequest().authenticated()
-        //.and()
-        //    .authorizeRequests()
-        //    .antMatchers("/**")
-        //    .hasRole("ADMIN")
+            //.anyRequest().authenticated()
+        .and()
+            .authorizeRequests()
+            .antMatchers("/**")
+            .hasAuthority("CUSTOMER")
         //.and()
         //    .formLogin()
         //    .permitAll()
@@ -83,7 +83,6 @@ class WebSecurityConfig(val jwtUtils: JwtUtils, val userDetailsService: UserDeta
         override fun commence(request: HttpServletRequest, response: HttpServletResponse, authException: AuthenticationException) {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Error: Unauthorized")
         }
-
     }
     @Component
     class JwtAuthenticationTokenFilter(val jwtUtils: JwtUtils): OncePerRequestFilter() {
@@ -117,6 +116,7 @@ class WebSecurityConfig(val jwtUtils: JwtUtils, val userDetailsService: UserDeta
             val userDetails = if(jwtUtils.validateJwtToken(token))
                 jwtUtils.getDetailsFromJwtToken(token) else throw RuntimeException()
 
+            println(userDetails.authorities)
             //Create an UsernamePasswordAuthenticationToken
             val authentication = UsernamePasswordAuthenticationToken(
                 userDetails,
@@ -129,6 +129,8 @@ class WebSecurityConfig(val jwtUtils: JwtUtils, val userDetailsService: UserDeta
 
             //Set the authentication Object in the security context
             SecurityContextHolder.getContext().authentication = authentication
+            filterChain.doFilter(request, response)
+
         }
     }
 }

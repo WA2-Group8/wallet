@@ -2,6 +2,7 @@ package it.polito.wa2group8.wallet.repositories
 
 import it.polito.wa2group8.wallet.domain.Customer
 import it.polito.wa2group8.wallet.domain.User
+import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
 
@@ -9,4 +10,6 @@ import org.springframework.stereotype.Repository
 interface CustomerRepository: CrudRepository<Customer, Long>
 {
     fun deleteCustomerByUser(user: User)
+
+    fun getCustomerByUser(user: String): Customer?
 }

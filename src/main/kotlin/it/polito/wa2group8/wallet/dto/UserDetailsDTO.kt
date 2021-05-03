@@ -57,6 +57,10 @@ class UserDetailsDTO(
     {
         return true
     }
+
+    override fun toString(): String {
+        return username
+    }
 }
 
 fun User.toUserDetailsDTO() = UserDetailsDTO(username, password, email, isEnabled, getRolenames())

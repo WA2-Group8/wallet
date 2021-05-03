@@ -8,6 +8,8 @@ import it.polito.wa2group8.wallet.exceptions.NotFoundException
 import it.polito.wa2group8.wallet.services.WalletService
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.prepost.PreAuthorize
+import org.springframework.security.authorization.AuthorityReactiveAuthorizationManager.hasRole
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.*
@@ -17,6 +19,7 @@ import javax.validation.Valid
 class WalletController(val walletService: WalletService)
 {
     @PostMapping(value = ["/wallet"], produces=[MediaType.APPLICATION_JSON_VALUE])
+
     @ResponseBody
     fun createWallet(
         @RequestBody @Valid customer: CustomerDTO,
