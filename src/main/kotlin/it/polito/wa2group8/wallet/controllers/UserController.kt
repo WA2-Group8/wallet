@@ -11,6 +11,7 @@ import it.polito.wa2group8.wallet.services.UserDetailsService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
@@ -94,17 +95,14 @@ class UserController(val userDetailsService: UserDetailsService, val authenticat
     //------------------- ENDPOINTS RESERVED TO ADMINS -------------------
 
     @GetMapping(value = ["/enable/{username}"], produces = [MediaType.APPLICATION_JSON_VALUE])
+    @PreAuthorize("hasAuthority('ADMIN')")
     @ResponseBody
     fun enableUserByUsername(
         @PathVariable("username") username: String,
     ): ResponseEntity<Any>
     {
-        val userDetail = SecurityContextHolder.getContext().authentication.principal
-        println(SecurityContextHolder.getContext().authentication)
-        if (userDetail == "ADMIN")
-        {
             //Only admins can enable an user manually
-            return try
+        return try
             {
                 ResponseEntity.status(201).body(userDetailsService.enableUser(username))
             }
@@ -112,19 +110,16 @@ class UserController(val userDetailsService: UserDetailsService, val authenticat
             {
                 ResponseEntity.status(404).body(ex.message)
             }
-        }
         //Unauthorized: user is not an admin!
         return ResponseEntity.status(401).body("UNAUTHORIZED")
     }
     @GetMapping(value = ["/disable/{username}"], produces = [MediaType.APPLICATION_JSON_VALUE])
+    @PreAuthorize("hasAuthority('ADMIN')")
     @ResponseBody
     fun disableUserByUsername(
         @PathVariable("username") username: String,
     ): ResponseEntity<Any>
     {
-        val userDetail = SecurityContextHolder.getContext().authentication.principal
-        if (userDetail == "ADMIN")
-        {
             //Only admins can disable an user manually
             return try
             {
@@ -134,7 +129,6 @@ class UserController(val userDetailsService: UserDetailsService, val authenticat
             {
                 ResponseEntity.status(404).body(ex.message)
             }
-        }
         //Unauthorized: user is not an admin!
         return ResponseEntity.status(401).body("UNAUTHORIZED")
     }

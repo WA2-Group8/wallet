@@ -64,6 +64,7 @@ class UserDetailsServiceImpl(
         val user = userRepository.findByUsername(username) ?: throw BadRequestException("Username does not exist")
         try {
             user.addRolename(role)
+            userRepository.save(user)
             if (user.getRolenames().contains("CUSTOMER"))
             {
                 val customer = Customer(null, null, null, user)
@@ -79,6 +80,7 @@ class UserDetailsServiceImpl(
         val user = userRepository.findByUsername(username) ?: throw BadRequestException("Username does not exist")
         try {
             user.removeRolename(role)
+            userRepository.save(user)
             if (role == "CUSTOMER")
             {
                 customerRepository.deleteCustomerByUser(user)
@@ -104,14 +106,14 @@ class UserDetailsServiceImpl(
         return user.toUserDetailsDTO()
     }
 
-    override fun doLogin(info: SignInBody)
+    /*override fun doLogin(info: SignInBody)
     {
         //TODO("Compute password hash")
         val user = userRepository.findByUsername(info.username)
         if (user == null || user.password != info.password)
             throw InvalidAuthException("Incorrect username and/or password")
         //If I'm here, username and password are both valid.
-    }
+    }*/
 
     override fun confirmRegistration(token: String): String {
         val userToken = emailVerificationTokenRepository.findEmailVerificationTokenByToken(token)

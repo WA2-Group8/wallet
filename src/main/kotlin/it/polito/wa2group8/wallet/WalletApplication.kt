@@ -32,9 +32,17 @@ class WalletApplication{
             userDetailsService.createUser(RegistrationRequestDTO("Leonardo","12345678","12345678","email2@email.com"))
             userDetailsService.createUser(RegistrationRequestDTO("Maria","12345678","12345678","email3@email.com"))
             val u1 = userRepository.findByUsername("Lorenzo")
-            u1!!.addRolename("ADMIN")
-            val banca = Customer("Banca","DeiPoveri","ViaZero",u1)
+            userDetailsService.addRoleToUser("ADMIN","Lorenzo")
+            userDetailsService.enableUser("Lorenzo")
+            userDetailsService.enableUser("Leonardo")
+            userDetailsService.enableUser("Maria")
+            val banca = customerRepository.getCustomerByUsername("Lorenzo").first()
+            banca!!.name="Banca"
+            banca.deliveryAddress="Via Zero"
+            banca.surname="Dei Poveri"
+            customerRepository.save(banca)
             val w1= Wallet(banca, BigDecimal(10000))
+            walletRepository.save(w1)
         }
     }
 }

@@ -11,5 +11,6 @@ interface CustomerRepository: CrudRepository<Customer, Long>
 {
     fun deleteCustomerByUser(user: User)
 
-    fun getCustomerByUser(user: String): Customer?
+    @Query("SELECT c FROM Customer c WHERE c.user.username = ?1")
+    fun getCustomerByUsername(username: String) : Iterable<Customer>
 }
