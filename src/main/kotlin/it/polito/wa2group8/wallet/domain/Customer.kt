@@ -11,7 +11,7 @@ class Customer(
     @Column(nullable = true)
     var deliveryAddress: String?,
     @OneToOne(cascade = [CascadeType.ALL])
-    @JoinColumn(name="username",referencedColumnName = "username")
+    @JoinColumn(name="user_id",referencedColumnName = "id")
     var user: User
 ): EntityBase<Long>()
 {

@@ -65,7 +65,7 @@ class UserDetailsServiceImpl(
         try {
             user.addRolename(role)
             userRepository.save(user)
-            if (user.getRolenames().contains("CUSTOMER"))
+            if (role == "CUSTOMER")
             {
                 val customer = Customer(null, null, null, user)
                 customerRepository.save(customer)

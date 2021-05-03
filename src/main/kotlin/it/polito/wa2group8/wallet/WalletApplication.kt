@@ -27,21 +27,24 @@ class WalletApplication{
     @Bean
     fun test(walletRepository : WalletRepository,customerRepository : CustomerRepository, userDetailsService: UserDetailsService, userRepository: UserRepository) : CommandLineRunner{
         return CommandLineRunner{
-            val encoder = BCryptPasswordEncoder()
+            //Users
             userDetailsService.createUser(RegistrationRequestDTO("Lorenzo","12345678","12345678","email1@email.com"))
             userDetailsService.createUser(RegistrationRequestDTO("Leonardo","12345678","12345678","email2@email.com"))
             userDetailsService.createUser(RegistrationRequestDTO("Maria","12345678","12345678","email3@email.com"))
-            val u1 = userRepository.findByUsername("Lorenzo")
+
+            //Enable users
             userDetailsService.addRoleToUser("ADMIN","Lorenzo")
             userDetailsService.enableUser("Lorenzo")
             userDetailsService.enableUser("Leonardo")
             userDetailsService.enableUser("Maria")
-            val banca = customerRepository.getCustomerByUsername("Lorenzo").first()
+
+            val banca = customerRepository.findByUsername("Lorenzo")
             banca!!.name="Banca"
             banca.deliveryAddress="Via Zero"
             banca.surname="Dei Poveri"
             customerRepository.save(banca)
-            val w1= Wallet(banca, BigDecimal(10000))
+
+            val w1= Wallet(banca, BigDecimal(1000000))
             walletRepository.save(w1)
         }
     }

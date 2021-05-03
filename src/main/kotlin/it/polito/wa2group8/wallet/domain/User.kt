@@ -6,13 +6,11 @@ import javax.validation.constraints.Email
 import javax.validation.constraints.NotEmpty
 
 
-
 @Entity
 @Table(indexes = [Index(name="usernameIndex", columnList = "username", unique=true)])
 class User (
     @Column(name="username", unique=true)
     @get:NotEmpty(message="Username must be not empty")
-    @Valid
     var username: String,
 
     @Column(nullable=false)

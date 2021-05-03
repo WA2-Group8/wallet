@@ -43,7 +43,7 @@ class WalletServiceImpl(
     override fun getWalletById(id: Long) : WalletDTO? {
         val wallet =  walletRepo.findByIdOrNull(id)?: throw NotFoundException("Wallet Not Found")
         val principal = SecurityContextHolder.getContext().authentication.principal as UserDetailsDTO
-        val customer = customerRepo.getCustomerByUsername(principal.username).first()
+        val customer = customerRepo.findByUsername(principal.username)
         if(!customer!!.walletList.contains(wallet)) throw ForbiddenException("You can't get wallet of other customers")
         return wallet.toWalletDTO()
     }
@@ -58,7 +58,7 @@ class WalletServiceImpl(
         val beneficiaryWallet = walletRepo.findByIdOrNull(transactionDTO.beneficiaryWalletID ?: -1) ?: throw NotFoundException("Beneficiary wallet not found")
 
         val principal = SecurityContextHolder.getContext().authentication.principal as UserDetailsDTO
-        val customer = customerRepo.getCustomerByUsername(principal.username).first()
+        val customer = customerRepo.findByUsername(principal.username)
         if(!customer!!.walletList.contains(payerWallet)) throw ForbiddenException("You can't get wallet of other customers")
 
         // Create Transaction entity
@@ -87,7 +87,7 @@ class WalletServiceImpl(
         // Check if wallet exist
         val wallet =  walletRepo.findByIdOrNull(walletId)?: throw NotFoundException("Wallet Not Found")
         val principal = SecurityContextHolder.getContext().authentication.principal as UserDetailsDTO
-        val customer = customerRepo.getCustomerByUsername(principal.username).first()
+        val customer = customerRepo.findByUsername(principal.username)
         if(!customer!!.walletList.contains(wallet)) throw ForbiddenException("You can't see transactions of other customers")
 
         // Converting date
@@ -102,7 +102,7 @@ class WalletServiceImpl(
         // Check if wallet exist
         val wallet =  walletRepo.findByIdOrNull(walletId)?: throw NotFoundException("Wallet Not Found")
         val principal = SecurityContextHolder.getContext().authentication.principal as UserDetailsDTO
-        val customer = customerRepo.getCustomerByUsername(principal.username).first()
+        val customer = customerRepo.findByUsername(principal.username)
         if(!customer!!.walletList.contains(wallet)) throw ForbiddenException("You can't see transactions of other customers")
 
 
