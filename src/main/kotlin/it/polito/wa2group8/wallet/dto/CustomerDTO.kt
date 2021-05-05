@@ -9,4 +9,4 @@ data class CustomerDTO(@get:NotNull(message="Invalid customerId") @get:Positive(
                        val email: String?,
                        val deliveryAddress: String?)
 
-fun Customer.toCustomerDTO() = CustomerDTO(customerID,"$name $surname", email, deliveryAddress)
+fun Customer.toCustomerDTO() = CustomerDTO(this.getId(),"$name $surname", user.email, deliveryAddress)

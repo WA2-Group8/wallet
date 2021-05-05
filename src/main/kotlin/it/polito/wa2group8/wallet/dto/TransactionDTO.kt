@@ -21,7 +21,7 @@ data class TransactionDTO(@get:DecimalMin(value="0.0", inclusive=false) val amou
  */
 fun Transaction.toTransactionDTO() = TransactionDTO(amount,
                                                     timeInstant.toInstant(ZoneOffset.UTC).toEpochMilli(),
-                                         payerWallet.walletId ?: -1,
-                                     beneficiaryWallet.walletId ?: -1)
+                                         payerWallet.getId() ?: -1,
+                                     beneficiaryWallet.getId() ?: -1)
 
 

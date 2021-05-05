@@ -8,11 +8,6 @@ import javax.validation.constraints.DecimalMin
 //This class maps a transaction to a DBMS
 @Entity
 class Transaction(
-    @Id
-    @Column(name = "transaction_id", nullable = false)
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    var transactionID: Long? = null,
-
     //The amount of money transacted
     @get:DecimalMin(value="0.0", message="The transaction amount must be greater than 0", inclusive=false)
     @Column(name = "amount", nullable = false)
@@ -24,11 +19,11 @@ class Transaction(
 
     //The wallet which the money was taken from
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "payerWallet",referencedColumnName = "walletId")
+    @JoinColumn(name = "payerWallet",referencedColumnName = "id")
     var payerWallet: Wallet,
 
     //The wallet which the money was given to
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "beneficiaryWallet",referencedColumnName = "walletId")
+    @JoinColumn(name = "beneficiaryWallet",referencedColumnName = "id")
     var beneficiaryWallet: Wallet
-    )
+): EntityBase<Long>()

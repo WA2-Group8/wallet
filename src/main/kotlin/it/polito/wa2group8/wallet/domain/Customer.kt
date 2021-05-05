@@ -1,22 +1,25 @@
 package it.polito.wa2group8.wallet.domain
 
-
 import javax.persistence.*
 
 @Entity
 class Customer(
-    @Id
-    @GeneratedValue
-    var customerID: Long?,
-    @Column(nullable = false)
-    var name: String,
-    @Column(nullable = false)
-    var surname: String,
-    @Column(nullable = false, unique = true)
-    var email: String,
-    @Column(nullable = false)
-    var deliveryAddress: String
-){
-    @OneToMany(mappedBy = "walletId", targetEntity = Wallet::class, fetch = FetchType.LAZY)
-    var walletList: MutableList<Wallet> = mutableListOf()
+    @Column(nullable = true)
+    var name: String?,
+    @Column(nullable = true)
+    var surname: String?,
+    @Column(nullable = true)
+    var deliveryAddress: String?,
+    @OneToOne(cascade = [CascadeType.ALL])
+    @JoinColumn(name="user_id",referencedColumnName = "id")
+    var user: User
+): EntityBase<Long>()
+{
+    //@OneToMany(mappedBy = "id", targetEntity = Wallet::class, fetch = FetchType.LAZY)
+    @OneToMany(cascade = [CascadeType.ALL])
+    var walletList: MutableSet<Wallet> = mutableSetOf()
+
+    fun addWallet(wallet: Wallet){
+        walletList.add(wallet)
+    }
 }
