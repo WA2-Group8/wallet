@@ -19,5 +19,5 @@ class Wallet (
     var pList: MutableSet<Transaction> = mutableSetOf() //Purchases list
 
     @OneToMany(mappedBy = "beneficiaryWallet",targetEntity=Transaction::class,fetch = FetchType.LAZY)
-    var rList: MutableSet<Transaction> = mutableSetOf() // Recharges list
+    var rList: MutableSet<Transaction> = mutableSetOf() //Recharges list
 }

@@ -14,7 +14,6 @@ import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.core.AuthenticationException
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
-import org.springframework.security.crypto.factory.PasswordEncoderFactories
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.AuthenticationEntryPoint
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
@@ -54,27 +53,21 @@ class WebSecurityConfig(val jwtUtils: JwtUtils, val userDetailsService: UserDeta
             .authorizeRequests()
             .antMatchers("/auth/**")
             .permitAll()
-            //.anyRequest().authenticated()
         .and()
             .authorizeRequests()
             .antMatchers("/**")
             .hasAuthority("CUSTOMER")
-        //.and()
-        //    .formLogin()
-        //    .permitAll()
         .and()
             .logout()
             .permitAll()
 
-        //http.sessionManagement().disable()//sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-        //http.exceptionHandling().authenticationEntryPoint(authEntryPoint)
+
         http.addFilterBefore(JwtAuthenticationTokenFilter(jwtUtils),
             UsernamePasswordAuthenticationFilter::class.java)
     }
 
     @Bean
     fun passwordEncoder() : PasswordEncoder {
-        //return PasswordEncoderFactories.createDelegatingPasswordEncoder()
         return BCryptPasswordEncoder()
     }
 
@@ -110,13 +103,13 @@ class WebSecurityConfig(val jwtUtils: JwtUtils, val userDetailsService: UserDeta
                 return
             }
 
+
             //Retrieve the JWT from the "Authorization" header
             val token = header.replace("Bearer ", "")
 
             val userDetails = if(jwtUtils.validateJwtToken(token))
-                jwtUtils.getDetailsFromJwtToken(token) else throw RuntimeException()
+                jwtUtils.getDetailsFromJwtToken(token) else return
 
-            println(userDetails.authorities)
             //Create an UsernamePasswordAuthenticationToken
             val authentication = UsernamePasswordAuthenticationToken(
                 userDetails,

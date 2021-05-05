@@ -4,6 +4,7 @@ import javax.persistence.*
 import javax.validation.Valid
 import javax.validation.constraints.Email
 import javax.validation.constraints.NotEmpty
+import javax.validation.constraints.Size
 
 
 @Entity
@@ -14,6 +15,7 @@ class User (
     var username: String,
 
     @Column(nullable=false)
+    @get:Size(min = 8)
     var password: String,
 
     @Column(unique=true)

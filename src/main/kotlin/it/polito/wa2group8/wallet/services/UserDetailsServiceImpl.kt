@@ -106,15 +106,6 @@ class UserDetailsServiceImpl(
         return user.toUserDetailsDTO()
     }
 
-    /*override fun doLogin(info: SignInBody)
-    {
-        //TODO("Compute password hash")
-        val user = userRepository.findByUsername(info.username)
-        if (user == null || user.password != info.password)
-            throw InvalidAuthException("Incorrect username and/or password")
-        //If I'm here, username and password are both valid.
-    }*/
-
     override fun confirmRegistration(token: String): String {
         val userToken = emailVerificationTokenRepository.findEmailVerificationTokenByToken(token)
             ?: throw NotFoundException("Token not valid.")

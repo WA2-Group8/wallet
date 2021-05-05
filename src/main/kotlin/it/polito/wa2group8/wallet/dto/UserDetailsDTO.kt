@@ -3,7 +3,6 @@ package it.polito.wa2group8.wallet.dto
 import it.polito.wa2group8.wallet.domain.User
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
-import javax.validation.constraints.Email
 import javax.validation.constraints.NotEmpty
 import javax.validation.constraints.Size
 import org.springframework.security.core.authority.SimpleGrantedAuthority
@@ -22,7 +21,6 @@ class UserDetailsDTO(
     private val password: String?,
     private val email: String?,
     private val isEnabled: Boolean?,
-    //TODO("gli altri boolen vanno aggiunti?")
     private val roles: Set<String>,
 ): UserDetails
 {
@@ -42,7 +40,6 @@ class UserDetailsDTO(
 
     fun getEmail(): String = email ?: ""
 
-    //NON ABBIAMO QUESTE INFORMAZIONI NEL DB!!!!
     override fun isAccountNonExpired(): Boolean
     {
         return true
@@ -58,9 +55,6 @@ class UserDetailsDTO(
         return true
     }
 
-    override fun toString(): String {
-        return username
-    }
 }
 
 fun User.toUserDetailsDTO() = UserDetailsDTO(username, password, email, isEnabled, getRolenames())

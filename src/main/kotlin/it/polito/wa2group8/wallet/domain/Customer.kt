@@ -15,6 +15,11 @@ class Customer(
     var user: User
 ): EntityBase<Long>()
 {
-    @OneToMany(mappedBy = "id", targetEntity = Wallet::class, fetch = FetchType.LAZY)
+    //@OneToMany(mappedBy = "id", targetEntity = Wallet::class, fetch = FetchType.LAZY)
+    @OneToMany(cascade = [CascadeType.ALL])
     var walletList: MutableSet<Wallet> = mutableSetOf()
+
+    fun addWallet(wallet: Wallet){
+        walletList.add(wallet)
+    }
 }

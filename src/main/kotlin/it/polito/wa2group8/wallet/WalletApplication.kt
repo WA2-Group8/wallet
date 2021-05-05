@@ -42,10 +42,11 @@ class WalletApplication{
             banca!!.name="Banca"
             banca.deliveryAddress="Via Zero"
             banca.surname="Dei Poveri"
-            customerRepository.save(banca)
 
             val w1= Wallet(banca, BigDecimal(1000000))
             walletRepository.save(w1)
+            banca.walletList = mutableSetOf<Wallet>(w1)
+            customerRepository.save(banca)
         }
     }
 }

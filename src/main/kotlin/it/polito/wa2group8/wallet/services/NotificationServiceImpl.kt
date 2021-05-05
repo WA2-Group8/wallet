@@ -25,7 +25,7 @@ class NotificationServiceImpl(
         return token
     }
 
-    //@Scheduled(fixedDelay = 60000)
+    @Scheduled(fixedDelay = 60000)
     fun checkExpiration(){
         val expiredList = emailVerificationTokenRepository.findEmailVerificationTokensByExpiryDateIsBefore(Timestamp(System.currentTimeMillis()))
         println("Automatic delete expired token:\n ${expiredList.map{it.token}}")

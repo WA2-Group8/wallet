@@ -36,8 +36,10 @@ class WalletServiceImpl(
         // Create Wallet entity
         val wallet = Wallet(customer, BigDecimal(0))
 
-        // Save wallet
-        return walletRepo.save(wallet).toWalletDTO()
+        walletRepo.save(wallet)
+        customer.addWallet(wallet)
+        customerRepo.save(customer)
+        return wallet.toWalletDTO()
     }
 
     override fun getWalletById(id: Long) : WalletDTO? {
@@ -59,7 +61,7 @@ class WalletServiceImpl(
 
         val principal = SecurityContextHolder.getContext().authentication.principal as UserDetailsDTO
         val customer = customerRepo.findByUsername(principal.username)
-        if(!customer!!.walletList.contains(payerWallet)) throw ForbiddenException("You can't get wallet of other customers")
+        if(!customer!!.walletList.contains(payerWallet)) throw ForbiddenException("You don't own the wallet")
 
         // Create Transaction entity
         val transaction = Transaction(transactionDTO.amount!!, LocalDateTime.now(), payerWallet, beneficiaryWallet)
