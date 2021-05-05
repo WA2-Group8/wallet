@@ -108,7 +108,10 @@ class WebSecurityConfig(val jwtUtils: JwtUtils, val userDetailsService: UserDeta
             val token = header.replace("Bearer ", "")
 
             val userDetails = if(jwtUtils.validateJwtToken(token))
-                jwtUtils.getDetailsFromJwtToken(token) else return
+                jwtUtils.getDetailsFromJwtToken(token) else { //if here the jwt is not valid
+                    filterChain.doFilter(request, response)
+                    return
+            }
 
             //Create an UsernamePasswordAuthenticationToken
             val authentication = UsernamePasswordAuthenticationToken(
